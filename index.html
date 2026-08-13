@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<!-- © 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved. -->
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Chatrachatchaya Ch., Ph.D., RMUTI">
+<meta name="copyright" content="© 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved.">
+<title>การเดินทางของกลูโคส · Cell Candy Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#DCEBFF; --navy2:#EAF3FF;
+  --panel1:#FFFFFF; --panel2:#DCE9FB;
+  --edge:#5AA9E8; --edge2:#9CC6EE;
+  --gold:#F0A11E; --gold2:#D97F0C;
+  --purple:#8B5CF6; --purple2:#6D28D9;
+  --cyan:#0EA5E9; --green:#16A34A; --red:#DC2626;
+  --ink:#123166; --dim:#5B7BA8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:10px;font-family:Kanit,system-ui,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(120% 90% at 50% -10%,#FFFFFF 0%,#DCEBFF 40%,#BBD7F5 100%);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+.app{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+
+/* ---------- glossy panel base ---------- */
+.pnl{
+  position:relative;border-radius:18px;
+  background:linear-gradient(180deg,#FFFFFF 0%,#E4EFFC 100%);
+  border:2px solid var(--edge2);
+  box-shadow:0 5px 0 #B4CFEA,0 12px 26px rgba(30,70,130,.20),inset 0 2px 0 #FFFFFF;
+}
+.pnl::after{content:'';position:absolute;left:8px;right:8px;top:3px;height:26%;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,0));
+  pointer-events:none;z-index:0}
+.pnl>*{position:relative;z-index:1}
+/* ฉากเกมต้องไม่มีฝ้าขาวคลุม */
+.stage::after{display:none!important}
+
+/* ---------- top bar ---------- */
+.top{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 16px;flex:0 0 auto}
+.brand .mark{width:38px;height:38px;border-radius:11px;flex:0 0 auto;
+  background:linear-gradient(180deg,#2B6FD0,#12356F);border:1.5px solid var(--edge);
+  display:grid;place-items:center;font-size:19px}
+.brand .t1{font-size:10.5px;color:#4A6B96;line-height:1.1;font-weight:600}
+.brand .t2{font-size:19px;font-weight:800;line-height:1.15}
+.stats{display:flex;gap:8px;flex:1 1 360px;flex-wrap:wrap;align-items:center}
+.stat{display:flex;align-items:center;gap:9px;padding:7px 15px 7px 8px;border-radius:999px;
+  background:linear-gradient(180deg,#FFFFFF,#DCE9FB);border:2px solid var(--edge2);
+  box-shadow:0 3px 0 #B4CFEA,inset 0 2px 0 #FFF}
+.orb{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:15px;
+  font-weight:800;flex:0 0 auto;box-shadow:inset 0 -3px 6px rgba(0,0,0,.22),inset 0 2px 3px rgba(255,255,255,.75),0 2px 5px rgba(30,70,130,.3)}
+.orb.atp{background:radial-gradient(circle at 34% 28%,#FFE18A,var(--gold2));color:#5A3400}
+.orb.nadh{background:radial-gradient(circle at 34% 28%,#D9A6FF,var(--purple2));color:#fff}
+.orb.o2{background:radial-gradient(circle at 34% 28%,#9BE0FF,#1D6FB8);color:#fff;font-size:12px}
+.orb.hp{background:radial-gradient(circle at 34% 28%,#A8F5C0,#22A05A);color:#fff}
+.orb.nadph{background:radial-gradient(circle at 34% 28%,#A9E7FF,#1B7FA8);color:#fff;font-size:11px}
+.stat .lb{font-size:10.5px;color:#4A6B96;line-height:1.1;font-weight:600}
+.stat .vl{font-size:16px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums}
+.tools{display:flex;gap:8px;flex:0 0 auto}
+.tool{width:54px;padding:7px 0;border-radius:16px;text-align:center;cursor:pointer;
+  background:linear-gradient(180deg,#FFFFFF,#DCE9FB);border:2px solid var(--edge2);
+  box-shadow:0 3px 0 #B4CFEA,inset 0 2px 0 #FFF;position:relative}
+.tool:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(4,14,36,.5)}
+.tool .ic{font-size:17px;line-height:1;color:#1B5E96}
+.tool .nm{font-size:9.5px;color:#2C5C93;margin-top:2px;font-weight:600}
+.tool .dot{position:absolute;top:-5px;right:-4px;min-width:18px;height:18px;border-radius:9px;
+  background:var(--red);border:2px solid #0A1B3D;font-size:10px;font-weight:800;line-height:14px}
+
+/* ---------- stage ---------- */
+.stage{position:relative;border-radius:20px;overflow:hidden;border:3px solid var(--edge2);
+  box-shadow:0 7px 0 #B4CFEA,0 16px 34px rgba(30,70,130,.28),inset 0 0 0 2px rgba(255,255,255,.5)}
+.stage svg{display:block;width:100%;height:auto}
+.hot{cursor:pointer}
+.hot.locked{cursor:not-allowed}
+
+/* progress ribbon (own panel, below stage) */
+.ribbon{display:flex;align-items:center;gap:12px;padding:9px 14px}
+.ribbon .ic{width:44px;height:44px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;
+  font-size:20px;background:linear-gradient(180deg,#EAF3FF,#C4DCF6);border:2px solid var(--edge)}
+.ribbon .mid{flex:1;min-width:0}
+.ribbon .ttl{font-size:12.5px;font-weight:700;color:#0E4C86;line-height:1.2}
+.ribbon .sub{font-size:10.5px;color:#4A6B96;margin-top:1px}
+.track{height:13px;border-radius:8px;background:#C9DCF2;border:1.5px solid #9CC6EE;overflow:hidden;margin-top:5px}
+.track>span{display:block;height:100%;width:0;border-radius:6px;
+  background:linear-gradient(90deg,#4ADE80,#A3E635 55%,var(--gold));transition:width .5s ease;
+  box-shadow:inset 0 -3px 5px rgba(0,0,0,.25)}
+.ribbon .pct{font-size:17px;font-weight:800;flex:0 0 auto}
+
+/* ---------- bottom row ---------- */
+.row{display:grid;grid-template-columns:1fr 300px;gap:10px}
+@media(max-width:820px){.row{grid-template-columns:1fr}}
+.steps{padding:12px;display:flex;align-items:center;gap:12px}
+.ring{width:88px;flex:0 0 auto;text-align:center}
+.ring svg{display:block;margin:0 auto}
+.ring .lb{font-size:10.5px;color:var(--dim);margin-top:3px;font-weight:500}
+.hint{flex:0 0 116px;padding-right:6px;border-right:1px solid #C9DCF2}
+.hint .h1{font-size:12.5px;font-weight:700;color:#0E4C86}
+.hint .h2{font-size:10.5px;color:var(--dim);line-height:1.45;margin-top:3px}
+.cards{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 6px;flex:1}
+.cards::-webkit-scrollbar{height:6px}
+.cards::-webkit-scrollbar-thumb{background:#9CC6EE;border-radius:3px}
+.card{flex:0 0 auto;width:76px;border-radius:14px;padding:7px 4px 6px;text-align:center;cursor:pointer;
+  background:linear-gradient(180deg,#FFFFFF,#DCE9FB);border:2px solid var(--edge2);
+  box-shadow:0 3px 0 #B4CFEA,inset 0 2px 0 #FFF;position:relative;transition:transform .15s,border-color .15s}
+.card:active{transform:translateY(2px);box-shadow:0 1px 0 #B4CFEA}
+.card .no{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:22px;height:22px;
+  border-radius:50%;font-size:11.5px;font-weight:800;line-height:19px;color:#fff;
+  background:linear-gradient(180deg,#6FB6EF,#2B6FD0);border:2px solid #FFF;box-shadow:0 2px 4px rgba(30,70,130,.35)}
+.card .gl{font-size:20px;margin-top:8px;line-height:1.1}
+.card .nm{font-size:10px;font-weight:700;margin-top:3px;line-height:1.2}
+.card .sb{font-size:8.5px;color:#4A6B96;line-height:1.2;margin-top:1px}
+.card .ck{width:19px;height:19px;border-radius:50%;margin:4px auto 0;font-size:11px;line-height:17px;
+  background:#DCE9FB;border:1.5px solid #9CC6EE;color:#9CC6EE}
+.card.done{border-color:#3AA76A}
+.card.done .ck{background:linear-gradient(180deg,#7FE8A8,#22A05A);border-color:#1B7A45;color:#FFF}
+.card.active{border-color:var(--gold);animation:glow 1.6s ease-in-out infinite}
+.card.locked{opacity:.45}
+@keyframes glow{0%,100%{box-shadow:0 3px 0 #B4CFEA,0 0 0 4px rgba(240,161,30,.3)}
+  50%{box-shadow:0 3px 0 #B4CFEA,0 0 0 9px rgba(240,161,30,.08)}}
+
+.mission{padding:11px 13px;background:linear-gradient(180deg,#F3B325,#D9820F);border-color:#B36A08}
+.mission::after{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0))}
+.mission .mt{font-size:12px;font-weight:800;color:#5A3400;text-align:center}
+.mission .mb{margin-top:7px;border-radius:12px;background:rgba(255,255,255,.22);padding:9px 10px;
+  border:1.5px solid rgba(255,255,255,.35)}
+.mission .md{font-size:12px;font-weight:600;color:#4A2B00;text-align:center;line-height:1.45}
+.mission .mtrack{height:16px;border-radius:9px;background:#8A5A06;border:1.5px solid #6B4404;
+  overflow:hidden;margin-top:7px;position:relative}
+.mission .mtrack>span{display:block;height:100%;width:0;border-radius:7px;
+  background:linear-gradient(90deg,#4C93E8,#7DD3FC);transition:width .5s ease}
+.mission .mtrack b{position:absolute;inset:0;font-size:10.5px;line-height:14px;text-align:center;
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);font-weight:700}
+.mission .go{width:100%;margin-top:9px;padding:11px;border-radius:13px;border:2px solid #1B4696;
+  background:linear-gradient(180deg,#4C93E8,#1F5BB5);color:#fff;font-family:inherit;font-size:15px;
+  font-weight:800;cursor:pointer;box-shadow:0 4px 0 #123A6E,inset 0 1px 0 rgba(255,255,255,.3)}
+.mission .go:active{transform:translateY(3px);box-shadow:0 1px 0 #123A6E}
+
+/* ---------- tip bar ---------- */
+.tip{display:flex;align-items:center;gap:11px;padding:10px 14px}
+.tip .bulb{width:38px;height:38px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  font-size:18px;background:radial-gradient(circle at 35% 30%,#FFE18A,var(--gold2))}
+.tip .tx{font-size:12px;line-height:1.5;color:#1B3E66;flex:1;min-width:120px}
+.tip .tx b{color:#B8730A}
+
+/* ---------- question sheet ---------- */
+.sheet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:12px;
+  background:rgba(20,50,95,.42);backdrop-filter:blur(4px);z-index:9}
+.qcard{width:100%;max-width:600px;max-height:100%;overflow-y:auto;border-radius:22px;padding:18px;
+  background:linear-gradient(180deg,#FFFFFF,#E4EFFC);border:3px solid var(--edge2);
+  box-shadow:0 8px 0 #B4CFEA,0 22px 44px rgba(20,50,95,.35),inset 0 2px 0 #FFF}
+.qeb{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.05em;color:#5A3400;
+  background:linear-gradient(180deg,#FFE18A,#F0A11E);padding:5px 13px;border-radius:999px;margin-bottom:10px;
+  box-shadow:0 2px 0 #C97F10}
+.qsc{background:rgba(56,189,248,.1);border-left:4px solid var(--cyan);border-radius:0 12px 12px 0;
+  padding:11px 13px;font-size:13.5px;line-height:1.65;color:#14486E;margin-bottom:12px;
+  background:#E2F2FE!important;border-left-width:5px!important}
+.qpr{font-size:16.5px;font-weight:700;line-height:1.5;margin-bottom:13px}
+.opt{display:block;width:100%;text-align:start;color:var(--ink);cursor:pointer;font-family:inherit;
+  background:linear-gradient(180deg,#FFFFFF,#E4EFFC);border:2px solid #9CC6EE;border-radius:14px;
+  padding:11px 14px;margin-bottom:9px;font-size:13.8px;line-height:1.55;font-weight:500;
+  box-shadow:0 3px 0 #C3DAF2;transition:border-color .15s,transform .1s}
+.opt:hover:not(:disabled){border-color:var(--cyan);background:linear-gradient(180deg,#FFFFFF,#D6EBFC)}
+.opt:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 rgba(4,14,36,.45)}
+.opt:disabled{opacity:.35;cursor:not-allowed}
+.opt.miss{border-color:#E0485F;background:linear-gradient(180deg,#FFE4E9,#FBC9D3);color:#8C1229}
+.opt.hit{border-color:#22A05A;background:linear-gradient(180deg,#DDF7E6,#B6EDCB);color:#0B5A31;opacity:1}
+.fb{border-radius:14px;padding:12px 14px;font-size:13.2px;line-height:1.65;margin-top:5px}
+.fb.warn{background:#FFEDF1;border:2px solid #F0A8B8;color:#8C1229}
+.fb.good{background:#E4F9EC;border:2px solid #8ADCAB;color:#0B5A31}
+.fb .h{display:block;font-weight:800;margin-bottom:4px}
+.fb .hint{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(20,60,110,.28);opacity:.9}
+.qbtn{width:100%;margin-top:12px;padding:13px;border-radius:14px;border:2px solid #1B7A45;
+  background:linear-gradient(180deg,#5BE38C,#22A05A);color:#04371C;font-family:inherit;font-size:15.5px;
+  font-weight:800;cursor:pointer;box-shadow:0 4px 0 #14663A}
+.qbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #14663A}
+.qbtn.ghost{background:linear-gradient(180deg,#FFFFFF,#DCE9FB);border-color:#9CC6EE;color:var(--ink);
+  box-shadow:0 4px 0 #B4CFEA}
+.qbtn.ghost:active{box-shadow:0 1px 0 #B4CFEA}
+.fin{text-align:center}.fin h3{font-size:22px;margin:0 0 8px}
+.note{font-size:12px;color:var(--dim);margin-top:10px;line-height:1.6}
+
+/* ---------- teacher panels ---------- */
+.tp{padding:14px}
+.tp h2{font-size:13.5px;margin:0 0 10px;font-weight:800;color:#0E4C86}
+#confusion .item{display:flex;justify-content:space-between;gap:10px;padding:7px 0;font-size:12.5px;
+  border-bottom:1px dashed rgba(120,170,240,.22)}
+#confusion .item:last-child{border-bottom:none}
+#confusion .n{color:#F0658A;font-weight:700;white-space:nowrap}
+.empty{color:#6E8FC0;font-size:12px}
+#log{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;line-height:1.6;max-height:150px;
+  overflow:auto;color:#4A6B96;white-space:pre-wrap;background:#F4F9FF;border:1px solid #C9DCF2;
+  border-radius:10px;padding:8px}
+.exp{margin-top:10px;margin-right:7px;padding:9px 14px;border-radius:11px;border:2px solid #9CC6EE;
+  color:#1B5E96;background:linear-gradient(180deg,#FFFFFF,#DCE9FB);font-family:inherit;font-size:12.5px;
+  font-weight:700;cursor:pointer;box-shadow:0 3px 0 #B4CFEA}
+.exp:active{transform:translateY(2px);box-shadow:0 1px 0 #B4CFEA}
+.host{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;font-size:11.5px;color:var(--dim);align-items:center}
+.host b{color:#B8730A}
+.tabs{display:flex;gap:8px}
+.tab{flex:1;padding:10px;border-radius:14px;font-family:inherit;font-size:13.5px;font-weight:700;
+  cursor:pointer;color:#2C5C93;background:linear-gradient(180deg,#FFFFFF,#DCE9FB);
+  border:2px solid var(--edge2);box-shadow:0 3px 0 #B4CFEA}
+.tab.on{color:#fff;border-color:var(--gold);
+  background:linear-gradient(180deg,#5AA9E8,#2B6FD0);box-shadow:0 3px 0 #1B4E8E}
+.tab:active{transform:translateY(2px);box-shadow:0 1px 0 #B4CFEA}
+
+/* ---- reaction card / timer / hints (§9.2, §9.3, §10.1) ---- */
+.qtimer{height:9px;border-radius:5px;background:#C9DCF2;border:1.5px solid #9CC6EE;
+  overflow:hidden;margin-bottom:12px}
+.qtimer>span{display:block;height:100%;width:100%;border-radius:4px;
+  background:linear-gradient(90deg,#4ADE80,#7DD3FC);transition:width .2s linear}
+.rxn{background:linear-gradient(180deg,#F4F9FF,#E2EEFB);border:2px solid #9CC6EE;border-radius:16px;
+  padding:11px 12px;margin-bottom:12px}
+.rxn-row{display:flex;align-items:stretch;gap:9px}
+@media(max-width:520px){.rxn-row{flex-direction:column}}
+.rxn-box{flex:1;background:linear-gradient(180deg,#FFFFFF,#EAF3FF);border:2px solid #7FB2E8;
+  border-radius:12px;padding:8px 10px;font-size:12.3px;line-height:1.4;font-weight:600;
+  box-shadow:inset 0 2px 0 #FFF,0 2px 4px rgba(30,70,130,.12);text-align:center}
+.rxn-box.sub{border-color:#7DD3FC}
+.rxn-box.prod{border-color:#4ADE80}
+.rxn-lb{display:block;font-size:9.5px;color:#5B7BA8;font-weight:700;margin-bottom:3px}
+.rxn-arrow{flex:0 0 132px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:1px}
+.rxn-arrow .enz{font-size:10.5px;font-weight:800;color:#B8730A;line-height:1.25}
+.rxn-arrow .arw{font-size:16px;color:#2B6FD0;letter-spacing:-1px}
+.rxn-arrow .rt{font-size:9.5px;color:#5B7BA8;line-height:1.25}
+.rxn-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;padding-top:8px;
+  border-top:1px dashed #A8C8EA;font-size:11px;color:#5B7BA8}
+.rxn-meta b{color:var(--ink)}
+.hintbar{margin:2px 0 6px}
+.hintbtn{width:100%;padding:9px;border-radius:11px;border:2px dashed #5AA9E8;cursor:pointer;
+  background:#E7F3FE;color:#1B5E96;font-family:inherit;font-size:12.5px;font-weight:700}
+.hintbtn:disabled{opacity:.35;cursor:not-allowed}
+.comp-row{margin-bottom:11px}
+.comp-lb{display:flex;justify-content:space-between;gap:8px;font-size:12.3px;margin-bottom:4px}
+.comp-bar{height:10px;border-radius:5px;background:#D6E6F7;border:1px solid #9CC6EE;overflow:hidden}
+.comp-bar>span{display:block;height:100%;border-radius:4px}
+.lvl{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.lvl.s{background:#D6F5E2;color:#0B5A31}
+.lvl.m{background:#FDEFD0;color:#8A5A06}
+.lvl.w{background:#FCDDE4;color:#8C1229}
+.lvl.n{background:#E4EDF8;color:#5B7BA8}
+.modeNote{font-size:10.5px;color:#5E86BE;text-align:center}
+.hidden{display:none!important}
+/* ---- กระดานคะแนนสด (Firebase leaderboard) ---- */
+#leaderboard{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
+.lb-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;
+  background:linear-gradient(180deg,#FFFFFF,#EAF3FF);border:2px solid #D6E6F7}
+.lb-row.me{border-color:var(--gold);background:linear-gradient(180deg,#FFF6E2,#FDEFD0)}
+.lb-rank{flex:0 0 28px;text-align:center;font-size:16px;font-weight:800;color:#1B5E96}
+.lb-name{flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
+.lb-name small{display:block;font-size:10.5px;color:var(--dim);font-weight:500}
+.lb-score{font-size:15px;font-weight:800;color:#B8730A}
+/* โครงสร้างโมเลกุลในการ์ดปฏิกิริยา */
+.mol{width:100%;max-width:168px;height:auto;display:block;margin:0 auto}
+.mol-name{font-size:11.5px;font-weight:700;color:var(--ink);margin-top:3px;line-height:1.35}
+.mol-extra{margin-top:-4px}
+/* ตารางหลังบ้านอาจารย์ */
+.tbl-wrap{overflow-x:auto;border:1px solid #C9DCF2;border-radius:10px}
+.tbl{border-collapse:collapse;width:100%;font-size:11.5px;background:#fff;min-width:720px}
+.tbl th,.tbl td{border-bottom:1px solid #E4EDF8;padding:6px 9px;text-align:left;white-space:nowrap}
+.tbl th{background:#EAF3FF;color:#1B5E96;font-weight:700;position:sticky;top:0}
+.tbl tbody tr:nth-child(even){background:#F7FBFF}
+.tbl td.weak{color:#8C1229;white-space:normal;min-width:170px}
+.idbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.idbar input{border:2px solid #9CC6EE;border-radius:9px;padding:7px 10px;font-family:inherit;
+  font-size:12.5px;color:var(--ink);background:#fff;width:130px}
+.idbar input:focus{outline:2px solid var(--cyan);outline-offset:1px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top">
+    <div class="pnl brand">
+      <div class="mark">⬡</div>
+      <div>
+        <div class="t1">การเดินทางของ</div>
+        <div class="t2">กลูโคส</div>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="tools">
+      <div class="pnl tool" id="btnExport"><div class="ic">📄</div><div class="nm">ผลของฉัน</div></div>
+      <div class="pnl tool" id="tHelp"><div class="ic">📖</div><div class="nm">วิธีเล่น</div></div>
+      <div class="pnl tool" id="tReset"><div class="ic">↻</div><div class="nm">เริ่มใหม่</div></div>
+    </div>
+  </div>
+
+  <!-- ===== STAGE ===== -->
+  <div class="pnl hidden" id="leaderboardPanel">
+    <h2 style="margin-bottom:8px">🏆 อันดับในห้องนี้ (สด)</h2>
+    <div id="leaderboard"><span class="empty">กำลังเชื่อมต่อ...</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tabP1">Phase 1 · ไซโทซอล</button>
+    <button class="tab" id="tabP2">Phase 2 · ไมโทคอนเดรีย</button>
+  </div>
+
+  <div class="pnl stage" id="stage">
+    <svg id="scene" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg" aria-label="แผนที่เซลล์"></svg>
+  </div>
+
+  <div class="pnl ribbon">
+    <div class="ic">📍</div>
+    <div class="mid">
+      <div class="ttl">ความคืบหน้าการเดินทางของกลูโคส</div>
+      <div class="sub" id="ribSub">Phase 1 · ไกลโคไลซิสในไซโทซอล</div>
+      <div class="track"><span id="ribFill"></span></div>
+    </div>
+    <div class="pct" id="ribPct">0%</div>
+  </div>
+
+  <!-- ===== BOTTOM ROW ===== -->
+  <div class="row">
+    <div class="pnl steps">
+      <div class="ring">
+        <svg width="76" height="76" viewBox="0 0 76 76">
+          <circle cx="38" cy="38" r="31" fill="none" stroke="#123A6E" stroke-width="9"/>
+          <circle id="ringArc" cx="38" cy="38" r="31" fill="none" stroke="#4ADE80" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="195" stroke-dashoffset="195"
+                  transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .5s ease"/>
+          <text id="ringTxt" x="38" y="43" text-anchor="middle" font-size="16" font-weight="800"
+                fill="#fff" font-family="Kanit,sans-serif">0%</text>
+        </svg>
+        <div class="lb">เส้นทางสำเร็จ</div>
+      </div>
+      <div class="hint">
+        <div class="h1">ขั้นตอนสำคัญ</div>
+        <div class="h2">แตะจุดเรืองแสงบนแผนที่ ตอบให้ถูกเพื่อปลดล็อกเอนไซม์</div>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="pnl mission">
+      <div class="mt">ภารกิจปัจจุบัน</div>
+      <div class="mb">
+        <div class="md" id="misText">ผ่านด่านไกลโคไลซิสให้ครบ<br>โดยตอบถูกตั้งแต่ครั้งแรก</div>
+        <div class="mtrack"><span id="misFill"></span><b id="misNum">0 / 8</b></div>
+      </div>
+      <button class="go" id="misGo">เริ่มภารกิจ</button>
+    </div>
+  </div>
+
+  <!-- ===== TIP BAR ===== -->
+  <div class="pnl tip">
+    <div class="bulb">💡</div>
+    <div class="tx" id="tipTx">
+      <b>เกร็ดความรู้:</b> ไกลโคไลซิสเกิดในไซโทซอล ส่วน TCA และ ETC เกิดในไมโทคอนเดรีย — กลูโคสไม่เคยเข้าไมโทคอนเดรีย มีแต่ไพรูเวตเท่านั้น
+    </div>
+  </div>
+
+  <div class="pnl host">
+    <div class="idbar" style="margin:0">
+      <span>รหัสห้อง</span>
+      <input id="inpRoom" value="BIO-301" placeholder="รหัสห้อง" style="width:100px">
+      <span>รหัสรอบ</span>
+      <input id="inpRound" value="R-2026-A" placeholder="รหัสรอบ" style="width:110px">
+      <span style="margin-left:6px">รหัสนักศึกษา</span>
+      <input id="inpId" value="65010001" placeholder="รหัส">
+      <span>ชื่อ</span>
+      <input id="inpName" value="ทดสอบระบบ" placeholder="ชื่อ–นามสกุล">
+      <span>ทีม</span>
+      <input id="inpTeam" value="Group 1" placeholder="ทีม" style="width:100px">
+    </div>
+  </div>
+
+  <div class="modeNote">Cell Candy Lab · Phase 1 — ผลการเล่นของคุณถูกบันทึกไว้สำหรับอาจารย์ผู้สอน</div>
+  <div class="modeNote" style="margin-top:4px;opacity:.85">© 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var CHECKPOINTS = [
+  { id:'glut', label:'GLUT', title:'GLUT transporter', color:'#5AD2F4', topic:'Glucose uptake',
+    caption:'กลูโคสรออยู่นอกเซลล์ ความเข้มข้นนอกเซลล์สูงกว่าในไซโทซอล',
+    question:{ tag:'transport',
+      scenario:'หลังมื้ออาหาร กลูโคสในเลือดสูงกว่าในไซโทซอลของเซลล์กล้ามเนื้อมาก ประตู GLUT บนเยื่อหุ้มเซลล์กำลังเปิดอยู่',
+      prompt:'กลูโคสเคลื่อนเข้าเซลล์ด้วยกลไกใด',
+      options:[
+        {text:'ไหลตามความชันความเข้มข้นผ่านตัวพา โดยไม่ใช้พลังงาน', correct:true},
+        {text:'ถูกสูบทวนความชันความเข้มข้น โดยใช้พลังงานจาก ATP',
+         consequence:'เซลล์เผา ATP ทิ้งโดยไม่จำเป็น ระดับ ATP ตกลง',
+         hint:'เทียบความเข้มข้นสองฝั่งก่อน — เมื่อข้างนอกเข้มข้นกว่า ยังต้องออกแรงดันอยู่หรือไม่'},
+        {text:'แพร่ผ่านแกนไขมันของเยื่อหุ้มเซลล์ โดยไม่ต้องมีตัวพา',
+         consequence:'กลูโคสยังคงติดค้างอยู่นอกเซลล์ เซลล์เริ่มขาดเชื้อเพลิง',
+         hint:'กลูโคสมีหมู่ –OH หลายหมู่จึงชอบน้ำ แล้วแกนกลางของเยื่อหุ้มเซลล์ชอบน้ำหรือชอบไขมัน'},
+        {text:'ถูกเติมหมู่ฟอสเฟตที่ผิวเซลล์ก่อน แล้วจึงถูกดึงเข้ามา',
+         consequence:'ไม่มีเอนไซม์ทำงานอยู่นอกเซลล์ กลูโคสจึงยังอยู่ที่เดิม',
+         hint:'hexokinase อยู่ที่ส่วนใดของเซลล์ ในหรือนอกเยื่อหุ้มเซลล์'}],
+      onCorrect:{ note:'กลูโคสไหลเข้าไซโทซอลตามความชัน โดยไม่ใช้ ATP' } } },
+
+  { id:'hexokinase', label:'1. Hexokinase', title:'ปฏิกิริยาที่ 1 · Hexokinase', color:'#FFD34E', topic:'Glycolysis',
+    caption:'กลูโคส → กลูโคส-6-ฟอสเฟต · ลงทุน ATP ตัวแรก',
+    question:{ tag:'atp-accounting',
+      scenario:'hexokinase ใช้ ATP 1 โมเลกุลเติมหมู่ฟอสเฟตให้กลูโคส เกิดเป็น glucose-6-phosphate ซึ่งมีประจุลบ',
+      prompt:'ผลที่สำคัญที่สุดของการเติมหมู่ฟอสเฟตนี้คืออะไร',
+      options:[
+        {text:'โมเลกุลมีประจุ จึงย้อนออกทาง GLUT ไม่ได้ และถูกกักไว้ในเซลล์', correct:true},
+        {text:'โมเลกุลมีพลังงานสูงพอที่จะถูกขนส่งเข้าสู่ไมโทคอนเดรีย',
+         consequence:'โมเลกุลวิ่งไปชนเยื่อไมโทคอนเดรียแล้วเด้งกลับ',
+         hint:'ทบทวนว่าสารตัวใดเท่านั้นที่มีตัวขนส่งเข้าสู่เมทริกซ์ของไมโทคอนเดรีย'},
+        {text:'โมเลกุลถูกออกซิไดซ์ จึงถ่ายอิเล็กตรอนให้ NAD⁺ ทันที',
+         consequence:'มาตรวัด NADH ยังนิ่งอยู่ที่ศูนย์',
+         hint:'แยกให้ออกระหว่าง phosphorylation กับ oxidation — ขั้นนี้มีการดึงอิเล็กตรอนออกหรือไม่'},
+        {text:'โมเลกุลเสียคาร์บอนไป 1 อะตอมในรูปของ CO₂',
+         consequence:'คาร์บอนยังครบทั้ง 6 อะตอม ไม่มี CO₂ ออกมาเลย',
+         hint:'ตลอดไกลโคไลซิสทั้งวิถี มีขั้นตอนใดปล่อย CO₂ บ้างหรือไม่'}],
+      onCorrect:{ atp:-1, note:'ลงทุน ATP 1 โมเลกุล → G6P ถูกกักอยู่ในเซลล์ พร้อมเข้าสู่วิถีต่อไป' } } },
+
+  { id:'junction', label:'ทางแยก G6P', title:'ทางแยก Glucose-6-phosphate', color:'#B388FF', topic:'Pathway integration',
+    caption:'จากจุดนี้ไปได้ 3 ทาง — ไกลโคไลซิส, ไกลโคเจน หรือ PPP',
+    question:{ tag:'nadh-vs-nadph',
+      scenario:'เซลล์เม็ดเลือดแดงกำลังเผชิญสารออกซิแดนท์ ต้องรีบเปลี่ยน glutathione ที่ถูกออกซิไดซ์กลับสู่รูปรีดิวซ์ให้ทัน',
+      prompt:'ควรส่ง glucose-6-phosphate ไปทางใด',
+      options:[
+        {text:'เข้า pentose phosphate pathway เพื่อผลิต NADPH ให้ glutathione', correct:true},
+        {text:'เข้าไกลโคไลซิสตามปกติ เพื่อผลิต NADH ให้ glutathione',
+         consequence:'glutathione ยังคงถูกออกซิไดซ์ เยื่อหุ้มเซลล์เริ่มถูกทำลาย',
+         hint:'โคเอนไซม์สองตัวนี้ทำงานคนละหน้าที่ ตัวใดป้อน ETC และตัวใดใช้ในปฏิกิริยารีดักชันเชิงสังเคราะห์'},
+        {text:'เข้าสู่การสร้างไกลโคเจน เพื่อสำรองพลังงานไว้ใช้ภายหลัง',
+         consequence:'สารออกซิแดนท์ยังทำงานต่อ เซลล์เสียหายเพิ่มขึ้น',
+         hint:'ขณะนี้เซลล์ขาดตัวรีดิวซ์เฉพาะหน้า หรือขาดพลังงานสำรองระยะยาว'},
+        {text:'ส่งเข้าไมโทคอนเดรีย เพื่อเข้าสู่วัฏจักรเครบส์โดยตรง',
+         consequence:'G6P มีประจุ ผ่านเยื่อไมโทคอนเดรียไม่ได้ ติดค้างในไซโทซอล',
+         hint:'PPP เกิดที่ส่วนใดของเซลล์ และ G6P ข้ามเยื่อไมโทคอนเดรียได้หรือไม่'}],
+      onCorrect:{ nadph:2, note:'กิ่ง oxidative ของ PPP → NADPH 2 + CO₂ 1 (เกิดในไซโทซอล)' }, branch:'ppp' } },
+
+  { id:'pgi', label:'2. PGI', title:'ปฏิกิริยาที่ 2 · Phosphoglucose isomerase', color:'#7DD3FC', topic:'Glycolysis',
+    caption:'กลูโคส-6-ฟอสเฟต → ฟรุกโทส-6-ฟอสเฟต · จัดเรียงโมเลกุลใหม่',
+    question:{ tag:'reaction-logic',
+      scenario:'PGI ย้ายหมู่คาร์บอนิลจากคาร์บอนตำแหน่งที่ 1 ไปยังตำแหน่งที่ 2 เปลี่ยน aldose ให้เป็น ketose',
+      prompt:'การจัดเรียงใหม่นี้เตรียมโมเลกุลไว้เพื่ออะไร',
+      options:[
+        {text:'ให้เติมฟอสเฟตที่ C1 ได้ แล้วตัดกลางเป็นชิ้น 3 คาร์บอนที่แปลงถึงกันได้', correct:true},
+        {text:'ให้พันธะระหว่าง C3 กับ C4 แข็งแรงขึ้น จนไม่ถูกตัดก่อนเวลาอันควร',
+         consequence:'ถ้าพันธะนั้นแข็งแรงขึ้นจริง aldolase ในขั้นถัดไปก็จะตัดโมเลกุลไม่ได้',
+         hint:'ขั้นตอนถัดไปคือการตัดโมเลกุลตรงกลาง แล้ววิถีต้องการให้ตัดยากขึ้นหรือง่ายขึ้น'},
+        {text:'ให้เกิดพันธะฟอสเฟตพลังงานสูง ที่พร้อมถ่ายให้ ADP ได้ทันที',
+         consequence:'มาตรวัด ATP ไม่ขยับ ยังไม่มีการถ่ายโอนหมู่ฟอสเฟตใด ๆ',
+         hint:'isomerase เปลี่ยนเพียงการจัดเรียงอะตอมภายในโมเลกุลเดิม พลังงานรวมจึงเปลี่ยนแปลงมากน้อยเพียงใด'},
+        {text:'ให้โมเลกุลหมดประจุ จึงเคลื่อนออกจากไซโทซอลได้อย่างอิสระ',
+         consequence:'หมู่ฟอสเฟตยังอยู่ครบ โมเลกุลยังมีประจุและออกจากเซลล์ไม่ได้',
+         hint:'PGI ได้ดึงหมู่ฟอสเฟตออกไปหรือไม่ แล้วประจุจะหายไปได้อย่างไร'}],
+      onCorrect:{ note:'G6P ⇌ F6P · ปฏิกิริยาผันกลับได้ เตรียมโมเลกุลให้ถูกตัดอย่างสมมาตร' } } },
+
+  { id:'pfk1', label:'3. PFK-1', title:'ปฏิกิริยาที่ 3 · Phosphofructokinase-1', color:'#FF7BA9', topic:'Regulation',
+    caption:'ฟรุกโทส-6-ฟอสเฟต → ฟรุกโทส-1,6-บิสฟอสเฟต · จุดควบคุมอัตราหลัก',
+    question:{ tag:'regulation',
+      scenario:'เซลล์กล้ามเนื้อกำลังพักผ่อน ระดับ ATP สูงมาก และ citrate รั่วออกจากไมโทคอนเดรียมาสะสมในไซโทซอล',
+      prompt:'PFK-1 ตอบสนองต่อสัญญาณทั้งสองนี้อย่างไร',
+      options:[
+        {text:'ถูกยับยั้งโดยทั้ง ATP และ citrate อัตราไกลโคไลซิสจึงลดลง', correct:true},
+        {text:'ถูกกระตุ้นโดย ATP เพราะเป็นสารตั้งต้นที่มีอยู่มากในขณะนั้น',
+         consequence:'เซลล์เร่งสลายกลูโคสทั้งที่พลังงานล้นอยู่แล้ว ATP ถูกผลาญทิ้ง',
+         hint:'ATP ทำหน้าที่ทั้งสารตั้งต้นและสัญญาณควบคุม เซลล์ที่พลังงานล้นควรเร่งหรือชะลอการเผาเชื้อเพลิง'},
+        {text:'ถูกกระตุ้นโดย citrate เพื่อเร่งป้อนสารตัวกลางเข้าวัฏจักรเครบส์',
+         consequence:'สารตัวกลางล้นวัฏจักรเครบส์ที่ทำงานเต็มกำลังอยู่แล้ว',
+         hint:'citrate สูงบ่งบอกว่าวัตถุดิบใน TCA เหลือเฟือ สัญญาณนี้ควรสั่งให้เร่งหรือชะลอ'},
+        {text:'ไม่ตอบสนองต่อทั้งสองสาร เพราะทำงานตามปริมาณสารตั้งต้นเท่านั้น',
+         consequence:'เชื้อเพลิงถูกเผาต่อเนื่องโดยไม่มีเบรก ระดับ ATP แกว่งอย่างควบคุมไม่ได้',
+         hint:'PFK-1 คือจุดควบคุมอัตราหลักของวิถี เอนไซม์ประเภทนี้มักมีลักษณะการทำงานอย่างไร'}],
+      onCorrect:{ atp:-1, note:'ลงทุน ATP อีก 1 (รวม 2) · ตัวกระตุ้นที่แรงที่สุดของ PFK-1 คือ fructose-2,6-bisphosphate' } } },
+
+  { id:'aldolase', label:'4. Aldolase', title:'ปฏิกิริยาที่ 4 · Aldolase', color:'#A3E635', topic:'Glycolysis',
+    caption:'ฟรุกโทส-1,6-บิสฟอสเฟต → ตัดกลางเป็นน้ำตาล 3 คาร์บอน 2 ชิ้น',
+    question:{ tag:'reaction-logic',
+      scenario:'aldolase ตัด fructose-1,6-bisphosphate ซึ่งมี 6 คาร์บอน ออกเป็นสองชิ้น',
+      prompt:'ผลิตภัณฑ์ทั้งสองชิ้นคืออะไร',
+      options:[
+        {text:'DHAP 1 โมเลกุล และ glyceraldehyde-3-phosphate 1 โมเลกุล', correct:true},
+        {text:'glyceraldehyde-3-phosphate 2 โมเลกุล ที่เหมือนกันทุกประการ',
+         consequence:'ถ้าเป็นเช่นนั้น วิถีก็ไม่จำเป็นต้องมีเอนไซม์ TPI ในขั้นถัดไปเลย',
+         hint:'ลองดูว่าทำไมวิถีนี้จึงยังต้องมีเอนไซม์อีกตัวคอยแปลงชิ้นหนึ่งให้กลายเป็นอีกชิ้นหนึ่ง'},
+        {text:'dihydroxyacetone phosphate 2 โมเลกุล ที่เหมือนกันทุกประการ',
+         consequence:'ไม่มี GAP ให้ GAPDH ใช้เป็นสารตั้งต้น ช่วง payoff จึงเริ่มต้นไม่ได้',
+         hint:'สารตั้งต้นของเอนไซม์ตัวถัดไปในช่วงเก็บเกี่ยวคือโมเลกุลใด'},
+        {text:'น้ำตาล 2 คาร์บอน 1 โมเลกุล และน้ำตาล 4 คาร์บอน 1 โมเลกุล',
+         consequence:'ชิ้นส่วนไม่เท่ากัน วิถีที่ออกแบบไว้สำหรับน้ำตาล 3 คาร์บอนจึงใช้ต่อไม่ได้',
+         hint:'ถ้าแบ่ง 6 คาร์บอนออกเป็นสองส่วนเท่า ๆ กัน จะได้ชิ้นละกี่คาร์บอน'}],
+      onCorrect:{ note:'F1,6BP → DHAP + GAP · ทั้งสองเป็นไอโซเมอร์กัน แต่ไม่ใช่โมเลกุลเดียวกัน' } } },
+
+  { id:'tpi', label:'5. TPI', title:'ปฏิกิริยาที่ 5 · Triose phosphate isomerase', color:'#A3E635', topic:'Glycolysis',
+    caption:'DHAP → glyceraldehyde-3-phosphate · ทำให้ได้ GAP ครบ 2 สาย',
+    question:{ tag:'atp-accounting',
+      scenario:'ในช่วง payoff phase มีเพียง glyceraldehyde-3-phosphate เท่านั้นที่เดินต่อได้ ส่วน DHAP เข้าวิถีโดยตรงไม่ได้',
+      prompt:'หากเซลล์ขาดเอนไซม์ TPI ไป ผลได้ของวิถีจะเปลี่ยนไปอย่างไร',
+      options:[
+        {text:'ผลได้ ATP และ NADH ในช่วง payoff ลดลงเหลือครึ่งหนึ่ง', correct:true},
+        {text:'ผลได้ ATP และ NADH ในช่วง payoff เพิ่มขึ้นเป็นสองเท่า',
+         consequence:'คาร์บอนครึ่งหนึ่งเดินต่อไม่ได้ ผลได้จึงลดลง ไม่ใช่เพิ่มขึ้น',
+         hint:'ถ้า DHAP เดินต่อไม่ได้ จำนวนสายที่เข้าสู่ช่วงเก็บเกี่ยวจะมากขึ้นหรือน้อยลง'},
+        {text:'ผลได้เท่าเดิม เพราะ DHAP เข้าสู่ช่วง payoff ได้อยู่แล้วโดยตรง',
+         consequence:'DHAP ไม่ใช่สารตั้งต้นของ GAPDH จึงค้างอยู่และเดินต่อไม่ได้',
+         hint:'อ่านสถานการณ์ข้างบนอีกครั้ง — โมเลกุลใดเท่านั้นที่เข้าสู่ช่วง payoff ได้'},
+        {text:'ผลได้เท่าเดิม แต่วิถีต้องลงทุน ATP เพิ่มอีก 2 โมเลกุล',
+         consequence:'การลงทุนของวิถีคงที่ที่ 2 ATP เสมอ สิ่งที่เปลี่ยนคือผลได้',
+         hint:'TPI เป็น isomerase ซึ่งไม่ใช้ ATP แล้วการขาดเอนไซม์นี้จะไปเพิ่มการลงทุนได้อย่างไร'}],
+      onCorrect:{ note:'DHAP ⇌ GAP · ตั้งแต่จุดนี้ทุกปฏิกิริยาเกิดขึ้น 2 ครั้งต่อกลูโคส 1 โมเลกุล' } } },
+
+  { id:'gapdh', label:'6. GAPDH', title:'ปฏิกิริยาที่ 6 · Glyceraldehyde-3-P dehydrogenase', color:'#B388FF', topic:'Glycolysis',
+    caption:'GAP → 1,3-BPG · จุดกำเนิด NADH ของไกลโคไลซิส',
+    question:{ tag:'nadh-vs-nadph',
+      scenario:'GAPDH ออกซิไดซ์หมู่อัลดีไฮด์ของ GAP พร้อมกับเติมหมู่ฟอสเฟตเข้าไป ได้ 1,3-bisphosphoglycerate ที่มีพันธะพลังงานสูง',
+      prompt:'โคเอนไซม์ใดรับอิเล็กตรอน และหมู่ฟอสเฟตที่เติมเข้าไปมาจากแหล่งใด',
+      options:[
+        {text:'NAD⁺ รับอิเล็กตรอน · ฟอสเฟตมาจาก Pi อิสระในไซโทซอล', correct:true},
+        {text:'NAD⁺ รับอิเล็กตรอน · ฟอสเฟตมาจากการสลาย ATP 1 โมเลกุล',
+         consequence:'บัญชีเพี้ยนทันที — ถ้าลงทุนเพิ่มตรงนี้ ผลได้สุทธิจะไม่ใช่ 2 ATP',
+         hint:'ไกลโคไลซิสใช้ ATP เพียงสองครั้งเท่านั้น ที่ขั้นตอนใดบ้าง แล้วขั้นนี้อยู่ในสองครั้งนั้นหรือไม่'},
+        {text:'NADP⁺ รับอิเล็กตรอน · ฟอสเฟตมาจาก Pi อิสระในไซโทซอล',
+         consequence:'ได้ตัวรีดิวซ์ผิดชนิด ไม่มี NADH ป้อนให้ ETC ในขั้นต่อไป',
+         hint:'วิถีสลายพลังงานกับวิถีสังเคราะห์ใช้โคเอนไซม์คนละตัว ไกลโคไลซิสจัดอยู่ในกลุ่มใด'},
+        {text:'FAD รับอิเล็กตรอน · ฟอสเฟตมาจากการสลาย ATP 1 โมเลกุล',
+         consequence:'มาตรวัด FADH₂ ในไซโทซอลไม่ขยับ และบัญชี ATP ผิดพลาด',
+         hint:'FADH₂ เกิดขึ้นที่เอนไซม์ตัวใด และเอนไซม์ตัวนั้นอยู่ที่ส่วนใดของเซลล์'}],
+      onCorrect:{ nadh:2, note:'NADH +2 · ฟอสเฟตมาจาก Pi ไม่ใช่ ATP · arsenate แย่งที่ Pi ทำให้ไม่ได้ ATP ในขั้นถัดไป' } } },
+
+  { id:'pgk', label:'7. PGK', title:'ปฏิกิริยาที่ 7 · Phosphoglycerate kinase', color:'#56E39F', topic:'ATP accounting',
+    caption:'1,3-BPG → 3-PG · ได้ ATP คืนครั้งแรก',
+    question:{ tag:'atp-accounting',
+      scenario:'1,3-bisphosphoglycerate มีพันธะฟอสเฟตพลังงานสูงกว่าใน ATP เอนไซม์ PGK จึงถ่ายหมู่ฟอสเฟตนั้นให้ ADP ได้โดยตรง',
+      prompt:'ปฏิกิริยานี้ให้ ATP กี่โมเลกุลต่อกลูโคส และต้องพึ่งออกซิเจนหรือไม่',
+      options:[
+        {text:'2 ATP · ไม่ต้องพึ่งออกซิเจน', correct:true},
+        {text:'1 ATP · ไม่ต้องพึ่งออกซิเจน',
+         consequence:'บัญชีขาดไป 1 โมเลกุล ผลได้สุทธิของวิถีจะคำนวณผิด',
+         hint:'ย้อนไปดูขั้นตอน TPI — ตั้งแต่จุดนั้นมีน้ำตาล 3 คาร์บอนกี่สายเดินคู่กันมา'},
+        {text:'2 ATP · ต้องพึ่งออกซิเจนผ่าน ETC',
+         consequence:'ถ้าเป็นเช่นนั้น เซลล์เม็ดเลือดแดงที่ไม่มีไมโทคอนเดรียจะสร้าง ATP ไม่ได้เลย',
+         hint:'substrate-level phosphorylation กับ oxidative phosphorylation ต่างกันอย่างไร ตัวใดต้องใช้เยื่อไมโทคอนเดรีย'},
+        {text:'4 ATP · ไม่ต้องพึ่งออกซิเจน',
+         consequence:'ตัวเลขนี้คือ ATP รวมทั้งช่วง payoff ไม่ใช่จากปฏิกิริยาเดียว',
+         hint:'ในช่วงเก็บเกี่ยวมีเอนไซม์กี่ตัวที่สร้าง ATP แล้วแต่ละตัวสร้างได้เท่าไร'}],
+      onCorrect:{ atp:2, note:'ATP +2 · substrate-level phosphorylation ครั้งแรกของวิถี ไม่ต้องใช้ออกซิเจน' } } },
+
+  { id:'mutase', label:'8. Mutase', title:'ปฏิกิริยาที่ 8 · Phosphoglycerate mutase', color:'#7DD3FC', topic:'Glycolysis',
+    caption:'3-PG → 2-PG · ย้ายตำแหน่งหมู่ฟอสเฟต',
+    question:{ tag:'reaction-logic',
+      scenario:'mutase ย้ายหมู่ฟอสเฟตของ 3-phosphoglycerate จากคาร์บอนตำแหน่งที่ 3 ไปยังตำแหน่งที่ 2',
+      prompt:'สมมติว่าเอนไซม์นี้ดึงหมู่ฟอสเฟตออกทิ้งแทนที่จะย้ายตำแหน่ง ผลจะเป็นอย่างไร',
+      options:[
+        {text:'วิถีขาด ATP จากปฏิกิริยาสุดท้าย ผลได้สุทธิเหลือ 0', correct:true},
+        {text:'วิถีได้ ATP เพิ่มขึ้น เพราะฟอสเฟตอิสระถูกนำไปใช้ทันที',
+         consequence:'ฟอสเฟตอิสระในไซโทซอลไม่ได้กลายเป็น ATP ได้เอง ต้องมีพันธะพลังงานสูงเป็นตัวส่ง',
+         hint:'ATP เกิดจากการถ่ายหมู่ฟอสเฟตจากสารที่มีศักย์การถ่ายโอนสูงกว่า แล้วฟอสเฟตอิสระมีศักย์เท่าใด'},
+        {text:'วิถีได้ NADH เพิ่มขึ้น 2 โมเลกุล ทดแทน ATP ที่หายไป',
+         consequence:'มาตรวัด NADH ไม่ขยับ ไกลโคไลซิสสร้าง NADH ที่ขั้นตอนเดียวเท่านั้น',
+         hint:'NADH ของไกลโคไลซิสเกิดที่เอนไซม์ตัวใด และขั้นนี้เป็นปฏิกิริยาออกซิเดชันหรือไม่'},
+        {text:'วิถีดำเนินต่อได้ตามปกติ เพราะ enolase เติมฟอสเฟตกลับเข้าไปให้',
+         consequence:'enolase ดึงน้ำออกเท่านั้น ไม่ได้เติมหมู่ฟอสเฟตกลับเข้าไป',
+         hint:'ทบทวนว่าเอนไซม์ตัวถัดไปทำอะไรกับโมเลกุล ดึงอะไรออก หรือเติมอะไรเข้า'}],
+      onCorrect:{ note:'3-PG → 2-PG · รักษาหมู่ฟอสเฟตไว้เพื่อใช้สร้าง ATP ในปฏิกิริยาสุดท้าย' } } },
+
+  { id:'enolase', label:'9. Enolase', title:'ปฏิกิริยาที่ 9 · Enolase', color:'#7DD3FC', topic:'Glycolysis',
+    caption:'2-PG → PEP · ดึงน้ำออกเพื่อเก็บพลังงาน',
+    question:{ tag:'reaction-logic',
+      scenario:'enolase ดึงน้ำออกจาก 2-phosphoglycerate ได้ phosphoenolpyruvate (PEP)',
+      prompt:'การดึงน้ำออกทำให้ PEP มีคุณสมบัติใดที่จำเป็นต่อขั้นตอนถัดไป',
+      options:[
+        {text:'มีพันธะฟอสเฟตที่ศักย์การถ่ายโอนสูงกว่าพันธะใน ATP', correct:true},
+        {text:'มีขนาดเล็กพอที่จะผ่านเยื่อหุ้มไมโทคอนเดรียชั้นในเข้าไป',
+         consequence:'PEP ยังมีประจุจากหมู่ฟอสเฟต จึงยังคงติดอยู่ในไซโทซอล',
+         hint:'ทบทวนอีกครั้งว่าในวิถีนี้มีสารตัวใดเพียงตัวเดียวที่ข้ามเข้าไมโทคอนเดรียได้'},
+        {text:'มีประจุลดลงจนถูกขนส่งออกนอกเซลล์ได้อย่างรวดเร็ว',
+         consequence:'เซลล์จะสูญเสียคาร์บอนที่ลงทุนมาทั้งวิถีไปเปล่า ๆ',
+         hint:'การดึงน้ำออกเปลี่ยนแปลงจำนวนหมู่ฟอสเฟตบนโมเลกุลหรือไม่'},
+        {text:'มีหมู่อัลดีไฮด์อิสระที่พร้อมถูกออกซิไดซ์โดย NAD⁺',
+         consequence:'ไม่มี NADH เกิดเพิ่ม และการสร้าง ATP ขั้นสุดท้ายก็ไม่เกิดขึ้น',
+         hint:'หมู่อัลดีไฮด์ถูกออกซิไดซ์ไปแล้วที่เอนไซม์ตัวใดในช่วงต้นของ payoff phase'}],
+      onCorrect:{ note:'2-PG → PEP + H₂O · ฟลูออไรด์ยับยั้ง enolase จึงใช้ในหลอดเก็บเลือดเพื่อหยุดไกลโคไลซิส' } } },
+
+  { id:'pk', label:'10. Pyruvate kinase', title:'ปฏิกิริยาที่ 10 · Pyruvate kinase', color:'#FFD34E', topic:'Regulation',
+    caption:'PEP → ไพรูเวต · ได้ ATP ครั้งสุดท้ายของวิถี',
+    question:{ tag:'regulation',
+      scenario:'ในตับ pyruvate kinase ถูกกระตุ้นแบบ feed-forward โดยสารตัวกลางที่เกิดขึ้นก่อนหน้าในวิถีเดียวกัน',
+      prompt:'สารใดทำหน้าที่เป็นตัวกระตุ้นแบบ feed-forward นี้',
+      options:[
+        {text:'fructose-1,6-bisphosphate จากปฏิกิริยาของ PFK-1', correct:true},
+        {text:'ATP ที่เพิ่งสะสมจากปฏิกิริยาของ phosphoglycerate kinase',
+         consequence:'เซลล์เร่งผลิต ATP ทั้งที่ระดับ ATP กำลังสูงขึ้น ระบบควบคุมเสียสมดุล',
+         hint:'ATP สูงเป็นสัญญาณว่าพลังงานเพียงพอแล้ว เอนไซม์ควบคุมมักตอบสนองอย่างไรต่อสัญญาณนี้'},
+        {text:'citrate ที่รั่วออกมาจากเมทริกซ์ของไมโทคอนเดรีย',
+         consequence:'สารตัวกลางล้นวัฏจักรเครบส์ที่ทำงานเต็มกำลังอยู่แล้ว',
+         hint:'citrate เป็นสัญญาณของภาวะวัตถุดิบเหลือเฟือ ควรเร่งหรือชะลอไกลโคไลซิส'},
+        {text:'NADH ที่เกิดขึ้นจากปฏิกิริยาของ GAPDH',
+         consequence:'NADH สะสมเป็นสัญญาณว่าตัวรับอิเล็กตรอนกำลังขาด ไม่ใช่สัญญาณให้เร่ง',
+         hint:'feed-forward หมายถึงสารต้นทางส่งสัญญาณให้ปลายทางเร่งตาม แล้ว NADH เป็นสารต้นทางของวิถีนี้หรือไม่'}],
+      onCorrect:{ atp:2, note:'ATP +2 · substrate-level phosphorylation ครั้งที่สอง · เป็นปฏิกิริยาที่ผันกลับไม่ได้' } } },
+
+  { id:'pyruvate', label:'ไพรูเวต', title:'ไพรูเวต — ทางแยกสำคัญ', color:'#FF8A5C', topic:'Glycolysis',
+    caption:'ปลายทางของไกลโคไลซิส และประตูสู่ไมโทคอนเดรีย',
+    question:{ tag:'mito-import',
+      scenario:'ไกลโคไลซิสครบทั้ง 10 ปฏิกิริยาแล้ว ขณะนี้ออกซิเจนยังเพียงพอ ไมโทคอนเดรียพร้อมรับงานต่อ',
+      prompt:'สารใดข้ามเยื่อหุ้มเข้าสู่เมทริกซ์ของไมโทคอนเดรีย',
+      options:[
+        {text:'ไพรูเวต ผ่านตัวขนส่งเฉพาะบนเยื่อไมโทคอนเดรียชั้นใน', correct:true},
+        {text:'กลูโคส ผ่านตัวขนส่ง GLUT บนเยื่อไมโทคอนเดรียชั้นนอก',
+         consequence:'ไม่มีตัวขนส่งกลูโคสที่เยื่อไมโทคอนเดรีย กลูโคสจึงเข้าไม่ได้',
+         hint:'ย้อนดูว่ากลูโคสถูกแปลงเป็นอะไรไปแล้วบ้างตลอด 10 ปฏิกิริยาที่ผ่านมา'},
+        {text:'glucose-6-phosphate ผ่านตัวขนส่งหมู่ฟอสเฟตบนเยื่อชั้นใน',
+         consequence:'G6P เป็นสารช่วงต้นวิถี และไม่มีตัวขนส่งพาเข้าเมทริกซ์',
+         hint:'ณ จุดนี้ของวิถี โมเลกุลที่อยู่ตรงหน้าประตูไมโทคอนเดรียมีกี่คาร์บอน'},
+        {text:'NADH จากไซโทซอล ผ่านตัวขนส่ง NADH บนเยื่อชั้นใน',
+         consequence:'ไม่มีตัวขนส่ง NADH อิเล็กตรอนจึงยังค้างอยู่นอกไมโทคอนเดรีย',
+         hint:'อิเล็กตรอนของ NADH เข้าไปได้ แต่ต้องผ่านระบบใด และเข้าไปทั้งโมเลกุลหรือไม่'}],
+      onCorrect:{ note:'ไพรูเวตเข้าเมทริกซ์ผ่านตัวขนส่งเฉพาะ — กลูโคสไม่เคยเข้าไมโทคอนเดรีย' } } },
+
+  { id:'anaerobic', label:'แลกเตต', title:'ทางเลือกเมื่อออกซิเจนต่ำ', color:'#F76C8F', topic:'Anaerobic metabolism',
+    caption:'ออกซิเจนกำลังลดลง — เซลล์ต้องหาทางไปต่อ',
+    question:{ tag:'nadh-vs-nadph',
+      scenario:'กล้ามเนื้อออกแรงหนักจนออกซิเจนส่งไปไม่ทัน ETC ทำงานได้น้อยลง NADH ในไซโทซอลสะสม และ NAD⁺ ใกล้หมด',
+      prompt:'การเปลี่ยนไพรูเวตเป็นแลกเตตช่วยแก้ปัญหาใดของเซลล์',
+      options:[
+        {text:'สร้าง NAD⁺ กลับคืน ให้ GAPDH ใช้เป็นตัวรับอิเล็กตรอนต่อไปได้', correct:true},
+        {text:'สร้าง ATP เพิ่มโดยตรงจากปฏิกิริยานี้อีก 2 โมเลกุล',
+         consequence:'มาตรวัด ATP ไม่ขยับ ปฏิกิริยานี้ไม่ได้ผลิต ATP',
+         hint:'ดูที่มาตรวัด NAD⁺/NADH แทน ปัญหาเฉพาะหน้าของเซลล์ตอนนี้คือขาดพลังงานหรือขาดตัวรับอิเล็กตรอน'},
+        {text:'สร้าง NADPH สำหรับต้านสารออกซิแดนท์ที่เกิดขณะออกกำลังกาย',
+         consequence:'NADPH ไม่ขยับ และ NAD⁺ ยังคงขาดแคลน ไกลโคไลซิสหยุดนิ่ง',
+         hint:'lactate dehydrogenase ใช้โคเอนไซม์ตัวใด NAD หรือ NADP'},
+        {text:'สร้างสารที่เข้าสู่ไมโทคอนเดรียแทนไพรูเวตได้ในภาวะขาดออกซิเจน',
+         consequence:'เมื่อออกซิเจนต่ำ วัฏจักรเครบส์และ ETC ก็ทำงานไม่ได้อยู่ดี',
+         hint:'ในภาวะนี้เซลล์ต้องทำให้วิถีใดเดินต่อให้ได้ วิถีในไซโทซอลหรือในไมโทคอนเดรีย'}],
+      onCorrect:{ nadh:-2, note:'NADH → NAD⁺ กลับคืน ไกลโคไลซิสเดินต่อได้ · แลกเตตถูกส่งไปตับ (Cori cycle)' }, branch:'lactate' } },
+
+  { id:'accounting', label:'สรุป ATP', title:'สรุปบัญชีของไกลโคไลซิส', color:'#FFD34E', topic:'ATP accounting',
+    caption:'ด่านสุดท้ายของ Phase 1 — ปิดบัญชีให้ตรง',
+    question:{ tag:'atp-accounting',
+      scenario:'ลงทุนที่ hexokinase และ PFK-1 อย่างละ 1 ATP แล้วเก็บเกี่ยวที่ phosphoglycerate kinase และ pyruvate kinase อย่างละ 2 ATP',
+      prompt:'ไกลโคไลซิสให้ ATP สุทธิและ NADH เท่าใดต่อกลูโคส 1 โมเลกุล',
+      options:[
+        {text:'ATP สุทธิ 2 · NADH 2', correct:true},
+        {text:'ATP สุทธิ 4 · NADH 2',
+         consequence:'บัญชีไม่สมดุล — ยังไม่ได้หักส่วนที่ลงทุนไปตอนต้นวิถี',
+         hint:'ย้อนดูมาตรวัด ATP ตอนผ่าน hexokinase และ PFK-1 ว่าลดลงไปรวมกี่หน่วย'},
+        {text:'ATP สุทธิ 2 · NADH 4',
+         consequence:'จำนวน NADH เกินจริง GAPDH ทำงาน 2 ครั้งต่อกลูโคส 1 โมเลกุลเท่านั้น',
+         hint:'GAPDH สร้าง NADH กี่โมเลกุลต่อหนึ่งสาย และมีกี่สายต่อกลูโคสหนึ่งโมเลกุล'},
+        {text:'ATP สุทธิ 0 · NADH 2',
+         consequence:'ถ้าเป็นเช่นนั้น เซลล์เม็ดเลือดแดงที่พึ่งไกลโคไลซิสอย่างเดียวจะอยู่ไม่ได้',
+         hint:'รวม ATP ที่สร้างได้ทั้งหมดก่อน แล้วจึงหักส่วนที่ลงทุน ผลลัพธ์เป็นบวกหรือศูนย์'}],
+      onCorrect:{ note:'ATP สุทธิ +2 · NADH +2 (ไซโทซอล) · ไพรูเวต 2 โมเลกุล พร้อมส่งต่อ Phase 2' } } }
+];
+
+var SIDE_QUESTS = [
+  { id:'glycogen', label:'ไกลโคเจน', title:'Glycogen storage', color:'#9BE15D', topic:'Glycogen metabolism',
+    caption:'คลังสำรองของตับและกล้ามเนื้อ',
+    question:{ tag:'regulation',
+      scenario:'หลังมื้ออาหาร อินซูลินสูง กลูโคสในเลือดสูง ตับได้รับ glucose-6-phosphate เข้ามาจำนวนมาก',
+      prompt:'ตับควรจัดการกับ glucose-6-phosphate ส่วนเกินอย่างไร',
+      options:[
+        {text:'สร้างเป็นไกลโคเจนเก็บสำรองไว้ในเซลล์ตับ', correct:true},
+        {text:'สลายไกลโคเจนที่มีอยู่เพิ่มขึ้นเพื่อปล่อยกลูโคส',
+         consequence:'น้ำตาลในเลือดยิ่งพุ่งสูงขึ้น สวนทางกับสัญญาณอินซูลิน',
+         hint:'อินซูลินหลั่งในภาวะอิ่มหรือภาวะอด แล้วภาวะนั้นเซลล์ควรเก็บหรือปล่อยกลูโคส'},
+        {text:'เร่ง gluconeogenesis เพื่อสร้างกลูโคสเพิ่มเติม',
+         consequence:'เซลล์สร้างกลูโคสเพิ่มทั้งที่ล้นอยู่แล้ว สิ้นเปลืองพลังงานมหาศาล',
+         hint:'gluconeogenesis ถูกกระตุ้นโดยฮอร์โมนตัวใด และในภาวะใด'},
+        {text:'ดึงหมู่ฟอสเฟตออกแล้วปล่อยกลูโคสเข้าสู่กระแสเลือดทันที',
+         consequence:'ตับปล่อยกลูโคสเพิ่มทั้งที่น้ำตาลในเลือดสูงอยู่แล้ว',
+         hint:'หน้าที่ปล่อยกลูโคสของตับเกิดในภาวะอดอาหาร แล้วตอนนี้ร่างกายอยู่ในภาวะใด'}],
+      onCorrect:{ atp:-1, note:'เก็บเป็นไกลโคเจน (ใช้พลังงานจาก UTP) — คลังสำรองพร้อมใช้ยามอด' }, branch:'glycogen' } }
+];
+
+/* ============================ PHASE 2 · ไมโทคอนเดรีย ============================ */
+var CHECKPOINTS2 = [
+  { id:'pdh', label:'PDH', title:'Pyruvate dehydrogenase complex', color:'#FFB454', topic:'PDH',
+    caption:'ไพรูเวตเข้าเมทริกซ์แล้ว — ประตูทางเดียวสู่วัฏจักรเครบส์',
+    question:{ tag:'reaction-logic',
+      scenario:'ไพรูเวตถูกขนส่งเข้าเมทริกซ์ และถูก PDH complex เปลี่ยนรูปในปฏิกิริยาที่ผันกลับไม่ได้',
+      prompt:'ผลิตภัณฑ์ของปฏิกิริยานี้คืออะไร',
+      options:[
+        {text:'acetyl-CoA · NADH · CO₂', correct:true},
+        {text:'acetyl-CoA · FADH₂ · CO₂',
+         consequence:'มาตรวัด FADH₂ ไม่ขยับ PDH ไม่ได้ใช้ FAD เป็นตัวรับอิเล็กตรอนสุดท้าย',
+         hint:'ในวัฏจักรเครบส์มีเอนไซม์เพียงตัวเดียวที่ให้ FADH₂ แล้วเอนไซม์ตัวนั้นคือตัวใด'},
+        {text:'oxaloacetate · NADH · CO₂',
+         consequence:'ถ้าไพรูเวตกลายเป็น OAA ได้เอง วัฏจักรก็ไม่ต้องการ acetyl-CoA อีกต่อไป',
+         hint:'ปฏิกิริยาไพรูเวต → OAA เป็นหน้าที่ของเอนไซม์คนละตัวในวิถี gluconeogenesis'},
+        {text:'acetyl-CoA · NADH · ATP',
+         consequence:'PDH ไม่สร้าง ATP โดยตรง และคาร์บอนที่หายไปต้องออกมาในรูปใดรูปหนึ่ง',
+         hint:'ไพรูเวตมี 3 คาร์บอน แต่ acetyl-CoA มี 2 คาร์บอน แล้วคาร์บอนที่หายไปออกมาในรูปใด'}],
+      onCorrect:{ nadh:2, note:'ไพรูเวต 2 → acetyl-CoA 2 + NADH 2 + CO₂ 2 · ผันกลับไม่ได้ จึงสร้างกลูโคสจากไขมันไม่ได้' } } },
+
+  { id:'citratesynthase', label:'1. Citrate synthase', title:'TCA 1 · Citrate synthase', color:'#F2A07A', topic:'TCA cycle',
+    caption:'acetyl-CoA (2C) + OAA (4C) → citrate (6C)',
+    question:{ tag:'regulation',
+      scenario:'ในภาวะอดอาหารนาน ตับดึง oxaloacetate ออกไปใช้สร้างกลูโคส ทำให้ OAA ในเมทริกซ์ลดต่ำลงมาก ขณะที่ acetyl-CoA จากการสลายไขมันมีมาก',
+      prompt:'ผลที่ตามมาต่อ acetyl-CoA ในเซลล์ตับคืออะไร',
+      options:[
+        {text:'เข้าวัฏจักรได้น้อยลง จึงถูกเปลี่ยนไปเป็นคีโตนบอดีแทน', correct:true},
+        {text:'ถูกเปลี่ยนกลับเป็นไพรูเวต เพื่อนำไปสร้างกลูโคส',
+         consequence:'ปฏิกิริยาของ PDH ผันกลับไม่ได้ acetyl-CoA จึงย้อนกลับไปเป็นไพรูเวตไม่ได้',
+         hint:'ทบทวนว่าปฏิกิริยาของ PDH ผันกลับได้หรือไม่ แล้วเหตุใดมนุษย์จึงสร้างกลูโคสจากไขมันไม่ได้'},
+        {text:'ทำให้วัฏจักรเดินเร็วขึ้น เพื่อชดเชย OAA ที่ขาดหายไป',
+         consequence:'เมื่อขาดตัวรับอย่าง OAA วัฏจักรจะเดินช้าลง ไม่ใช่เร็วขึ้น',
+         hint:'citrate synthase ต้องใช้สารตั้งต้นสองตัว ถ้าตัวหนึ่งขาด อัตราปฏิกิริยาจะเป็นอย่างไร'},
+        {text:'ถูกออกซิไดซ์เป็น CO₂ โดยตรง โดยไม่ต้องเข้าวัฏจักร',
+         consequence:'ไม่มีเส้นทางใดออกซิไดซ์ acetyl-CoA ได้โดยข้ามวัฏจักรเครบส์',
+         hint:'คาร์บอนของ acetyl-CoA ถูกปล่อยเป็น CO₂ ที่ขั้นตอนใดของวัฏจักร'}],
+      onCorrect:{ note:'OAA เป็นตัวรับ acetyl-CoA · เมื่อ OAA พร่อง acetyl-CoA จะไหลไปทางคีโตนบอดี' } } },
+
+  { id:'aconitase', label:'2. Aconitase', title:'TCA 2 · Aconitase', color:'#F2A07A', topic:'TCA cycle',
+    caption:'citrate → isocitrate · ย้ายหมู่ไฮดรอกซิล',
+    question:{ tag:'reaction-logic',
+      scenario:'citrate มีหมู่ไฮดรอกซิลอยู่บนคาร์บอนตติยภูมิ aconitase ย้ายหมู่นี้ไปยังคาร์บอนข้างเคียงได้เป็น isocitrate',
+      prompt:'การย้ายหมู่ไฮดรอกซิลนี้จำเป็นต่อขั้นตอนถัดไปเพราะเหตุใด',
+      options:[
+        {text:'เปลี่ยนเป็นแอลกอฮอล์ทุติยภูมิ ซึ่งถูกออกซิไดซ์ต่อได้', correct:true},
+        {text:'เพิ่มคาร์บอนให้โมเลกุลอีก 1 อะตอม ก่อนถูกปล่อยเป็น CO₂',
+         consequence:'จำนวนคาร์บอนคงที่ที่ 6 อะตอม aconitase ไม่ได้เติมคาร์บอน',
+         hint:'ปฏิกิริยาแบบ isomerization เปลี่ยนจำนวนอะตอมในโมเลกุลหรือเพียงจัดเรียงใหม่'},
+        {text:'ปล่อย CO₂ โมเลกุลแรกของวัฏจักรออกมาในขั้นตอนนี้',
+         consequence:'ยังไม่มี CO₂ ออกมา และมาตรวัด NADH ก็ยังไม่ขยับ',
+         hint:'CO₂ ในวัฏจักรถูกปล่อยพร้อมกับการสร้าง NADH ที่เอนไซม์ชนิดใด'},
+        {text:'สร้างพันธะไทโออีสเทอร์พลังงานสูงระหว่างโมเลกุลกับ CoA',
+         consequence:'ยังไม่มีการจับกับ CoA ในขั้นตอนนี้',
+         hint:'พันธะกับ CoA เกิดขึ้นที่ขั้นตอนใดของวัฏจักร และนำไปสู่การสร้างอะไรต่อ'}],
+      onCorrect:{ note:'citrate ⇌ isocitrate · แอลกอฮอล์ตติยภูมิถูกออกซิไดซ์ไม่ได้ จึงต้องย้ายตำแหน่งก่อน' } } },
+
+  { id:'idh', label:'3. IDH', title:'TCA 3 · Isocitrate dehydrogenase', color:'#B388FF', topic:'TCA cycle',
+    caption:'isocitrate → α-ketoglutarate + NADH + CO₂ · จุดควบคุมอัตราหลัก',
+    question:{ tag:'regulation',
+      scenario:'กล้ามเนื้อเริ่มออกกำลังกาย ATP ถูกใช้จนเหลือน้อย ระดับ ADP สูงขึ้น และ Ca²⁺ ถูกปล่อยออกมาขณะกล้ามเนื้อหดตัว',
+      prompt:'isocitrate dehydrogenase ตอบสนองต่อสัญญาณเหล่านี้อย่างไร',
+      options:[
+        {text:'ถูกกระตุ้นโดย ADP และ Ca²⁺ วัฏจักรจึงเดินเร็วขึ้น', correct:true},
+        {text:'ถูกยับยั้งโดย ADP และ Ca²⁺ วัฏจักรจึงเดินช้าลง',
+         consequence:'เซลล์ชะลอการผลิตพลังงานในขณะที่กำลังต้องการมากที่สุด',
+         hint:'ADP สูงเป็นสัญญาณว่าพลังงานพร่องหรือเหลือเฟือ แล้วเซลล์ควรตอบสนองอย่างไร'},
+        {text:'ถูกกระตุ้นโดย NADH ที่สะสมอยู่จากขั้นตอนก่อนหน้า',
+         consequence:'NADH สะสมหมายถึงตัวรับอิเล็กตรอนกำลังขาด การเร่งต่อจะยิ่งทำให้คั่ง',
+         hint:'NADH สูงบ่งบอกว่า ETC ระบายอิเล็กตรอนไม่ทัน สัญญาณนี้ควรเร่งหรือชะลอวัฏจักร'},
+        {text:'ไม่ตอบสนองต่อสัญญาณใด เพราะไม่ใช่จุดควบคุมของวัฏจักร',
+         consequence:'วัฏจักรเดินคงที่โดยไม่สัมพันธ์กับความต้องการพลังงานของเซลล์',
+         hint:'ในวัฏจักรเครบส์ เอนไซม์ที่กำหนดอัตราหลัก (rate-limiting) คือเอนไซม์ตัวใด'}],
+      onCorrect:{ nadh:2, note:'NADH +2 · CO₂ โมเลกุลแรก · IDH คือจุดควบคุมอัตราหลักของวัฏจักร' } } },
+
+  { id:'kgdh', label:'4. α-KGDH', title:'TCA 4 · α-Ketoglutarate dehydrogenase', color:'#B388FF', topic:'TCA cycle',
+    caption:'α-ketoglutarate → succinyl-CoA + NADH + CO₂',
+    question:{ tag:'reaction-logic',
+      scenario:'เอนไซม์ตัวนี้เป็นคอมเพล็กซ์ขนาดใหญ่ที่มีกลไกและโคแฟกเตอร์คล้ายกับ PDH complex อย่างมาก',
+      prompt:'ความคล้ายคลึงนี้ส่งผลอย่างไรในทางคลินิก',
+      options:[
+        {text:'ใช้โคแฟกเตอร์ชุดเดียวกับ PDH จึงถูกยับยั้งโดยสารหนู arsenite เช่นกัน', correct:true},
+        {text:'ใช้ FAD เป็นตัวรับอิเล็กตรอนสุดท้าย จึงให้ FADH₂ แทน NADH',
+         consequence:'มาตรวัด FADH₂ ไม่ขยับ ผลิตภัณฑ์ที่ได้คือ NADH',
+         hint:'ทั้ง PDH และเอนไซม์ตัวนี้ถ่ายอิเล็กตรอนให้โคเอนไซม์ตัวใดเป็นลำดับสุดท้าย'},
+        {text:'เป็นปฏิกิริยาผันกลับได้ จึงใช้สร้าง α-ketoglutarate คืนได้เมื่อจำเป็น',
+         consequence:'ปฏิกิริยานี้ผันกลับไม่ได้ เช่นเดียวกับปฏิกิริยาของ PDH',
+         hint:'ปฏิกิริยาที่ปล่อย CO₂ พร้อมสร้างพันธะกับ CoA มักผันกลับได้หรือไม่'},
+        {text:'ไม่ปล่อย CO₂ เพราะคาร์บอนถูกเก็บไว้ทั้งหมดในรูป succinyl-CoA',
+         consequence:'คาร์บอนหายไป 1 อะตอม (5C → 4C) จึงต้องมี CO₂ ออกมา',
+         hint:'นับคาร์บอนของ α-ketoglutarate เทียบกับ succinyl-CoA ว่าต่างกันกี่อะตอม'}],
+      onCorrect:{ nadh:2, note:'NADH +2 · CO₂ โมเลกุลที่สอง · ใช้ TPP, lipoamide, FAD, NAD⁺, CoA เหมือน PDH' } } },
+
+  { id:'scs', label:'5. SCS', title:'TCA 5 · Succinyl-CoA synthetase', color:'#56E39F', topic:'ATP accounting',
+    caption:'succinyl-CoA → succinate + GTP',
+    question:{ tag:'atp-accounting',
+      scenario:'พลังงานจากพันธะไทโออีสเทอร์ของ succinyl-CoA ถูกใช้เติมหมู่ฟอสเฟตให้ GDP โดยตรง',
+      prompt:'การสร้างพลังงานในขั้นตอนนี้จัดเป็นแบบใด',
+      options:[
+        {text:'substrate-level phosphorylation ได้ GTP ซึ่งเทียบเท่า ATP', correct:true},
+        {text:'oxidative phosphorylation ผ่านคอมเพล็กซ์บนเยื่อชั้นใน',
+         consequence:'ถ้าเป็นเช่นนั้น ขั้นตอนนี้จะหยุดทันทีเมื่อขาดออกซิเจน',
+         hint:'ขั้นตอนนี้ต้องอาศัยความชัน H⁺ ข้ามเยื่อหรือไม่ แล้วต่างจาก ATP synthase อย่างไร'},
+        {text:'การถ่ายอิเล็กตรอนให้ NAD⁺ ได้ NADH เป็นผลิตภัณฑ์',
+         consequence:'มาตรวัด NADH ไม่ขยับในขั้นตอนนี้',
+         hint:'ขั้นตอนนี้เป็นการถ่ายหมู่ฟอสเฟต ไม่ใช่การถ่ายอิเล็กตรอน สังเกตชื่อผลิตภัณฑ์ให้ดี'},
+        {text:'การไฮโดรไลซิส ATP เพื่อขับเคลื่อนปฏิกิริยาให้เดินหน้า',
+         consequence:'ระดับ ATP ลดลงทั้งที่วัฏจักรควรเป็นฝ่ายผลิตพลังงาน',
+         hint:'วัฏจักรเครบส์เป็นวิถีสลาย (catabolic) ทิศทางของพลังงานควรเป็นเข้าหรือออก'}],
+      onCorrect:{ atp:2, note:'GTP +2 (เทียบเท่า ATP) · เป็นจุดเดียวในวัฏจักรที่สร้างพลังงานโดยตรงไม่ผ่าน ETC' } } },
+
+  { id:'sdh', label:'6. SDH', title:'TCA 6 · Succinate dehydrogenase', color:'#FFB454', topic:'TCA cycle',
+    caption:'succinate → fumarate + FADH₂ · เอนไซม์ที่อยู่บนเยื่อ',
+    question:{ tag:'compartment',
+      scenario:'เอนไซม์เจ็ดตัวของวัฏจักรเครบส์ลอยอยู่ในเมทริกซ์ แต่ succinate dehydrogenase อยู่คนละที่กับเพื่อน',
+      prompt:'เอนไซม์ตัวนี้อยู่ที่ใด และมีบทบาทพิเศษอย่างไร',
+      options:[
+        {text:'ฝังบนเยื่อชั้นใน และเป็นคอมเพล็กซ์ II ของห่วงโซ่ขนส่งอิเล็กตรอน', correct:true},
+        {text:'ฝังบนเยื่อชั้นนอก และปั๊ม H⁺ ออกสู่ไซโทซอลโดยตรง',
+         consequence:'เยื่อชั้นนอกมีรูพรุนให้สารผ่านอิสระ จึงสร้างความชัน H⁺ ไม่ได้',
+         hint:'ความชัน H⁺ ถูกสร้างข้ามเยื่อชั้นใดของไมโทคอนเดรีย'},
+        {text:'ลอยอยู่ในไซโทซอล จึงต้องส่งผลิตภัณฑ์กลับเข้าสู่เมทริกซ์',
+         consequence:'วัฏจักรจะขาดตอน เพราะ succinate ต้องข้ามเยื่อออกไปแล้วกลับเข้ามา',
+         hint:'วัฏจักรเครบส์ทั้งวัฏจักรเกิดขึ้นในช่องใดของไมโทคอนเดรีย'},
+        {text:'อยู่ในช่องระหว่างเยื่อ และรับอิเล็กตรอนจาก cytochrome c',
+         consequence:'ทิศทางการไหลของอิเล็กตรอนกลับด้าน cytochrome c อยู่ปลายทางไม่ใช่ต้นทาง',
+         hint:'อิเล็กตรอนไหลจากตัวที่มีศักย์รีดักชันต่ำไปสูง แล้ว FADH₂ อยู่ต้นทางหรือปลายทาง'}],
+      onCorrect:{ fadh2:2, note:'FADH₂ +2 · SDH = Complex II · ส่งอิเล็กตรอนให้ CoQ โดยตรง จึงข้าม Complex I' } } },
+
+  { id:'fumarase', label:'7. Fumarase', title:'TCA 7 · Fumarase', color:'#F2A07A', topic:'TCA cycle',
+    caption:'fumarate → malate · เติมน้ำข้ามพันธะคู่',
+    question:{ tag:'reaction-logic',
+      scenario:'fumarase เติมโมเลกุลน้ำเข้าไปที่พันธะคู่ระหว่างคาร์บอนของ fumarate',
+      prompt:'ผลของการเติมน้ำนี้คืออะไร',
+      options:[
+        {text:'ได้หมู่ไฮดรอกซิลที่พร้อมถูกออกซิไดซ์ในขั้นถัดไป', correct:true},
+        {text:'ได้พันธะคู่เพิ่มอีกหนึ่งตำแหน่งที่พร้อมรับอิเล็กตรอน',
+         consequence:'ทิศทางกลับด้าน การเติมน้ำเข้าพันธะคู่ทำให้พันธะคู่หายไป ไม่ใช่เพิ่มขึ้น',
+         hint:'ปฏิกิริยา hydration กับ dehydration ให้ผลตรงข้ามกัน ขั้นนี้เป็นแบบใด'},
+        {text:'ได้ CO₂ ออกมา 1 โมเลกุล พร้อมกับโมเลกุลที่สั้นลง',
+         consequence:'จำนวนคาร์บอนยังคงที่ที่ 4 อะตอม และไม่มี CO₂ ออกมา',
+         hint:'CO₂ ทั้งสองโมเลกุลของวัฏจักรถูกปล่อยไปแล้วที่ขั้นตอนใดบ้าง'},
+        {text:'ได้ FADH₂ เพิ่มอีก 1 โมเลกุลจากการถ่ายอิเล็กตรอน',
+         consequence:'มาตรวัด FADH₂ ไม่ขยับ ขั้นตอนนี้ไม่ใช่ปฏิกิริยาออกซิเดชัน',
+         hint:'การเติมน้ำเข้าโมเลกุลมีการถ่ายอิเล็กตรอนออกไปหรือไม่'}],
+      onCorrect:{ note:'fumarate + H₂O → malate · เตรียมหมู่ –OH ให้ถูกออกซิไดซ์เป็นหมู่คีโตน' } } },
+
+  { id:'mdh', label:'8. MDH', title:'TCA 8 · Malate dehydrogenase', color:'#B388FF', topic:'TCA cycle',
+    caption:'malate → oxaloacetate + NADH · ปิดวัฏจักร',
+    question:{ tag:'reaction-logic',
+      scenario:'ปฏิกิริยาสุดท้ายของวัฏจักรออกซิไดซ์ malate พร้อมสร้าง NADH โมเลกุลที่สามของรอบนี้',
+      prompt:'เหตุใดขั้นตอนนี้จึงจำเป็นต่อการเดินวัฏจักรรอบถัดไป',
+      options:[
+        {text:'สร้าง oxaloacetate คืน เพื่อรับ acetyl-CoA โมเลกุลถัดไป', correct:true},
+        {text:'สร้าง citrate คืน เพื่อใช้เป็นสารตั้งต้นเริ่มรอบใหม่',
+         consequence:'citrate เป็นผลิตภัณฑ์ของรอบใหม่ ไม่ใช่สารที่ต้องเตรียมไว้ล่วงหน้า',
+         hint:'สารตัวใดทำหน้าที่เป็นตัวรับ (acceptor) ที่ต้องมีอยู่ก่อนวัฏจักรจะเริ่มได้'},
+        {text:'สร้าง acetyl-CoA คืน เพื่อป้อนให้เอนไซม์ citrate synthase',
+         consequence:'acetyl-CoA มาจากการสลายไพรูเวตและกรดไขมัน ไม่ได้เกิดจากวัฏจักรเอง',
+         hint:'วัฏจักรนี้รับ acetyl-CoA เข้ามาจากภายนอก หรือสร้างขึ้นเองภายในวัฏจักร'},
+        {text:'สร้าง coenzyme A คืน เพื่อใช้ในปฏิกิริยาของ PDH complex',
+         consequence:'CoA ถูกปลดปล่อยคืนไปแล้วตั้งแต่ขั้นตอนของ citrate synthase',
+         hint:'CoA หลุดออกจากโมเลกุลที่ขั้นตอนใดของวัฏจักร'}],
+      onCorrect:{ nadh:2, note:'NADH +2 · OAA กลับคืนมา วัฏจักรจึงเดินต่อได้ (ปฏิกิริยา anaplerotic ช่วยเติม OAA)' } } },
+
+  { id:'complex1', label:'Cx I', title:'ETC · Complex I → CoQ', color:'#5AD2F4', topic:'ETC',
+    caption:'NADH ส่งอิเล็กตรอนเข้าห่วงโซ่ พร้อมปั๊ม H⁺',
+    question:{ tag:'compartment',
+      scenario:'NADH ที่สะสมในเมทริกซ์เข้าสู่ห่วงโซ่ขนส่งอิเล็กตรอนบนเยื่อชั้นใน',
+      prompt:'NADH ส่งอิเล็กตรอนเข้าที่คอมเพล็กซ์ใด ต่อไปยังตัวพาใด และ H⁺ ถูกปั๊มไปทางไหน',
+      options:[
+        {text:'คอมเพล็กซ์ I → CoQ · ปั๊ม H⁺ ออกสู่ช่องระหว่างเยื่อ', correct:true},
+        {text:'คอมเพล็กซ์ II → CoQ · ปั๊ม H⁺ ออกสู่ช่องระหว่างเยื่อ',
+         consequence:'คอมเพล็กซ์ II รับอิเล็กตรอนจาก FADH₂ ไม่ใช่จาก NADH และไม่ปั๊ม H⁺',
+         hint:'FADH₂ ให้ ATP น้อยกว่า NADH เพราะเข้าที่คอมเพล็กซ์ใด และข้ามการปั๊มที่จุดใดไป'},
+        {text:'คอมเพล็กซ์ I → cytochrome c · ปั๊ม H⁺ เข้าสู่เมทริกซ์',
+         consequence:'ทิศทางการปั๊มกลับด้าน ความชัน H⁺ จึงไม่เกิดขึ้น',
+         hint:'H⁺ ต้องสะสมอยู่ฝั่งใดของเยื่อ จึงจะไหลกลับผ่าน ATP synthase ได้'},
+        {text:'คอมเพล็กซ์ III → CoQ · โดยไม่มีการปั๊ม H⁺ ในขั้นตอนนี้',
+         consequence:'ลำดับสลับกัน CoQ อยู่ก่อนคอมเพล็กซ์ III ไม่ใช่หลัง',
+         hint:'เรียงลำดับตัวพาให้ถูก อิเล็กตรอนไหลผ่าน CoQ ก่อนหรือหลังคอมเพล็กซ์ III'}],
+      onCorrect:{ nadh:-8, h:32, note:'NADH → Complex I → CoQ · ปั๊ม H⁺ ออกสู่ช่องระหว่างเยื่อ สร้างความชัน' } } },
+
+  { id:'complex3', label:'Cx III', title:'ETC · Complex III → cytochrome c', color:'#5AD2F4', topic:'ETC',
+    caption:'CoQH₂ ส่งอิเล็กตรอนต่อให้ cytochrome c',
+    question:{ tag:'reaction-logic',
+      scenario:'อิเล็กตรอนจากทั้ง NADH (ผ่านคอมเพล็กซ์ I) และ FADH₂ (ผ่านคอมเพล็กซ์ II) มารวมกันที่ CoQ',
+      prompt:'ลำดับการไหลของอิเล็กตรอนหลังจาก CoQ เป็นอย่างไร',
+      options:[
+        {text:'CoQH₂ → คอมเพล็กซ์ III → cytochrome c', correct:true},
+        {text:'cytochrome c → คอมเพล็กซ์ III → CoQH₂',
+         consequence:'อิเล็กตรอนไหลย้อนทาง ความชัน H⁺ จึงไม่ถูกสร้างขึ้น',
+         hint:'อิเล็กตรอนไหลจากตัวพาที่มีศักย์รีดักชันต่ำไปหาตัวที่สูงกว่าเสมอ ตัวใดสูงกว่ากัน'},
+        {text:'CoQH₂ → คอมเพล็กซ์ III → O₂ โดยตรง',
+         consequence:'ข้ามคอมเพล็กซ์ IV ซึ่งเป็นจุดเดียวที่ถ่ายอิเล็กตรอนให้ออกซิเจนได้',
+         hint:'ตัวรับอิเล็กตรอนตัวสุดท้ายทำงานอยู่ที่คอมเพล็กซ์ใด'},
+        {text:'NADH → คอมเพล็กซ์ III → cytochrome c โดยไม่ผ่าน CoQ',
+         consequence:'NADH ไม่ได้ส่งอิเล็กตรอนให้คอมเพล็กซ์ III โดยตรง',
+         hint:'NADH เข้าห่วงโซ่ที่คอมเพล็กซ์ใดเป็นจุดแรก'}],
+      onCorrect:{ fadh2:-2, h:26, note:'CoQH₂ → Complex III → cyt c · ปั๊ม H⁺ เพิ่ม (Q cycle)' } } },
+
+  { id:'complex4', label:'Cx IV', title:'ETC · Complex IV → O₂', color:'#5AD2F4', topic:'ETC',
+    caption:'ออกซิเจนคือตัวรับอิเล็กตรอนตัวสุดท้าย',
+    question:{ tag:'regulation',
+      scenario:'ผู้ป่วยรายหนึ่งสูดควันจากเพลิงไหม้ที่มีไซยาไนด์ปนอยู่ ระดับแลกเตตในเลือดสูงขึ้นอย่างรวดเร็ว',
+      prompt:'กลไกที่ทำให้เกิดภาวะนี้คืออะไร',
+      options:[
+        {text:'คอมเพล็กซ์ IV ถูกยับยั้ง O₂ ไม่ถูกรีดิวซ์ NADH จึงคั่งและวัฏจักรหยุด', correct:true},
+        {text:'คอมเพล็กซ์ IV ถูกกระตุ้น เซลล์จึงใช้ O₂ หมดจนเนื้อเยื่อขาดออกซิเจน',
+         consequence:'ปริมาณออกซิเจนในเลือดยังปกติ ปัญหาอยู่ที่เซลล์ใช้ออกซิเจนไม่ได้',
+         hint:'ไซยาไนด์จับกับ cytochrome a-a₃ แล้วทำให้คอมเพล็กซ์นั้นทำงานได้ดีขึ้นหรือหยุดทำงาน'},
+        {text:'เยื่อชั้นในรั่ว H⁺ ไหลกลับเข้าเมทริกซ์โดยไม่ผ่าน ATP synthase',
+         consequence:'นั่นคือกลไกของสาร uncoupler ซึ่งการใช้ O₂ จะเพิ่มขึ้น ไม่ใช่หยุดลง',
+         hint:'แยกให้ออกระหว่างสารที่ยับยั้งห่วงโซ่ กับสารที่ทำให้ห่วงโซ่หลุดจากการสร้าง ATP'},
+        {text:'ATP synthase ถูกยับยั้งโดยตรง แต่ห่วงโซ่ยังเดินได้ตามปกติ',
+         consequence:'ถ้าห่วงโซ่ยังเดินได้ NADH ก็จะไม่คั่ง และแลกเตตก็ไม่ควรสูงขึ้นเช่นนี้',
+         hint:'ไซยาไนด์ออกฤทธิ์ที่โปรตีนตัวใด ตัวพาอิเล็กตรอนหรือเอนไซม์สร้าง ATP'}],
+      onCorrect:{ o2:-4, h:26, note:'O₂ + 4e⁻ + 4H⁺ → 2H₂O · ไซยาไนด์และ CO ยับยั้งคอมเพล็กซ์ IV' } } },
+
+  { id:'atpsynthase', label:'ATP synthase', title:'ATP synthase · Chemiosmosis', color:'#FFD34E', topic:'ATP synthase',
+    caption:'ความชัน H⁺ หมุนกังหันสร้าง ATP',
+    question:{ tag:'reaction-logic',
+      scenario:'H⁺ ถูกปั๊มสะสมอยู่ในช่องระหว่างเยื่อจนมีความเข้มข้นสูงกว่าในเมทริกซ์มาก',
+      prompt:'อะไรขับเคลื่อนการหมุนของ ATP synthase',
+      options:[
+        {text:'H⁺ ไหลกลับจากช่องระหว่างเยื่อเข้าสู่เมทริกซ์ตามความชัน', correct:true},
+        {text:'H⁺ ไหลจากเมทริกซ์ออกสู่ช่องระหว่างเยื่อตามความชัน',
+         consequence:'ทิศทางกลับด้าน H⁺ ต้องไหลลงตามความชันที่สะสมไว้',
+         hint:'ฝั่งใดมีความเข้มข้น H⁺ สูงกว่า แล้วการไหลตามธรรมชาติจะไปทางใด'},
+        {text:'การถ่ายอิเล็กตรอนจาก cytochrome c ไปยัง O₂ โดยตรง',
+         consequence:'นั่นคือหน้าที่ของคอมเพล็กซ์ IV ไม่ใช่กลไกขับเคลื่อน ATP synthase',
+         hint:'พลังงานจากการถ่ายอิเล็กตรอนถูกเก็บไว้ในรูปใดก่อน แล้วจึงนำมาสร้าง ATP'},
+        {text:'การไฮโดรไลซิส GTP ที่ได้จากวัฏจักรเครบส์',
+         consequence:'ถ้าต้องใช้ GTP มาสร้าง ATP ก็จะไม่มีพลังงานสุทธิเพิ่มขึ้นเลย',
+         hint:'ชื่อ chemiosmosis บ่งบอกว่าพลังงานถูกเก็บไว้ในรูปของอะไร'}],
+      onCorrect:{ atp:28, h:-70, note:'H⁺ ไหลกลับผ่าน F₀ หมุน F₁ สร้าง ATP · โอลิโกไมซินยับยั้งขั้นตอนนี้' } } },
+
+  { id:'total', label:'สรุปรวม', title:'สรุปผลได้ทั้งกระบวนการ', color:'#FFD34E', topic:'ATP accounting',
+    caption:'ปิดบัญชีตั้งแต่กลูโคสจนถึงน้ำและคาร์บอนไดออกไซด์',
+    question:{ tag:'atp-accounting',
+      scenario:'รวมผลได้จากไกลโคไลซิส (ไซโทซอล) PDH วัฏจักรเครบส์ และ oxidative phosphorylation เข้าด้วยกัน',
+      prompt:'กลูโคส 1 โมเลกุลให้ ATP รวมประมาณเท่าใด และเหตุใดตัวเลขจึงไม่คงที่',
+      options:[
+        {text:'ประมาณ 30–32 · ขึ้นกับว่าเซลล์ใช้ shuttle แบบใดขนอิเล็กตรอนเข้าเมทริกซ์', correct:true},
+        {text:'ประมาณ 38 เสมอ · เพราะทุกเซลล์ใช้ระบบ shuttle แบบเดียวกัน',
+         consequence:'ตัวเลข 38 มาจากการประมาณแบบเก่าที่ให้ NADH = 3 ATP เสมอ',
+         hint:'กล้ามเนื้อกับตับใช้ระบบรับส่งอิเล็กตรอนคนละแบบ ผลได้จึงต่างกันหรือไม่'},
+        {text:'ประมาณ 36 เสมอ · เพราะ NADH ทุกโมเลกุลให้ ATP เท่ากันหมด',
+         consequence:'NADH จากไซโทซอลกับจากเมทริกซ์ให้ผลได้ไม่เท่ากัน',
+         hint:'NADH จากไกลโคไลซิสอยู่ในไซโทซอล ต้องผ่านอะไรก่อนจึงจะใช้ได้ และเสียอะไรไปบ้าง'},
+        {text:'ประมาณ 4 · เพราะ ATP ส่วนที่เหลือถูกใช้ในการขนส่งสารทั้งหมด',
+         consequence:'ตัวเลขนี้นับเฉพาะ substrate-level phosphorylation โดยไม่รวม ETC',
+         hint:'ATP ส่วนใหญ่ของเซลล์มาจากขั้นตอนใด การถ่ายฟอสเฟตโดยตรงหรือ chemiosmosis'}],
+      onCorrect:{ note:'≈30–32 ATP · malate-aspartate shuttle ให้มากกว่า glycerol-3P shuttle · NADH ≈2.5 ATP, FADH₂ ≈1.5 ATP' } } }
+];
+
+var SIDE_QUESTS2 = [
+  { id:'uncoupler', label:'Uncoupler', title:'สาร uncoupler และการสร้างความร้อน', color:'#F76C8F', topic:'ETC',
+    caption:'เมื่อความชัน H⁺ รั่วออกโดยไม่ผ่าน ATP synthase',
+    question:{ tag:'regulation',
+      scenario:'ทารกแรกเกิดสร้างความร้อนด้วยไขมันสีน้ำตาล ซึ่งมีโปรตีน thermogenin (UCP1) เปิดช่องให้ H⁺ ไหลกลับเข้าเมทริกซ์โดยไม่ผ่าน ATP synthase',
+      prompt:'ผลต่อการใช้ออกซิเจนและการสร้าง ATP เป็นอย่างไร',
+      options:[
+        {text:'ใช้ O₂ มากขึ้น แต่ได้ ATP น้อยลง พลังงานออกมาเป็นความร้อน', correct:true},
+        {text:'ใช้ O₂ น้อยลง และได้ ATP น้อยลง พลังงานออกมาเป็นความร้อน',
+         consequence:'เมื่อความชันถูกระบายทิ้ง ห่วงโซ่จะเดินเร็วขึ้น การใช้ O₂ จึงเพิ่มขึ้น',
+         hint:'เมื่อความชัน H⁺ ลดลง แรงต้านของห่วงโซ่ขนส่งอิเล็กตรอนจะมากขึ้นหรือน้อยลง'},
+        {text:'ใช้ O₂ มากขึ้น และได้ ATP มากขึ้นตามไปด้วย',
+         consequence:'ATP จะไม่เพิ่ม เพราะ H⁺ ไม่ได้ไหลผ่าน ATP synthase',
+         hint:'ATP synthase จะสร้าง ATP ได้ก็ต่อเมื่อ H⁺ ไหลผ่านช่องของมันเท่านั้น'},
+        {text:'ใช้ O₂ เท่าเดิม แต่ ATP ถูกสลายเร็วขึ้นจนอุณหภูมิสูงขึ้น',
+         consequence:'ความร้อนมาจากการระบายความชัน H⁺ ไม่ใช่จากการสลาย ATP',
+         hint:'พลังงานที่เก็บไว้ในความชัน H⁺ จะเปลี่ยนไปเป็นรูปใดเมื่อไม่ได้ถูกใช้สร้าง ATP'}],
+      onCorrect:{ h:-20, note:'uncoupler เช่น 2,4-DNP และ thermogenin · เร่ง ETC แต่ไม่ได้ ATP พลังงานกลายเป็นความร้อน' } } }
+];
+
+/* ===== §9.2 Reaction Card · §14 Question Bank Schema ===== */
+var REACTION = {
+  glut:{sub:'กลูโคส (นอกเซลล์)',prod:'กลูโคส (ไซโทซอล)',enz:'GLUT transporter',
+        rt:'Facilitated diffusion',cb:6,ca:6,cof:'—',en:'ไม่ใช้พลังงาน'},
+  hexokinase:{sub:'กลูโคส + ATP',prod:'G6P + ADP',enz:'Hexokinase',
+        rt:'Phosphorylation',cb:6,ca:6,cof:'Mg²⁺',en:'ATP −1'},
+  junction:{sub:'G6P + 2 NADP⁺',prod:'ribulose-5P + CO₂ + 2 NADPH',enz:'G6P dehydrogenase',
+        rt:'Oxidative decarboxylation',cb:6,ca:5,cof:'NADP⁺',en:'NADPH +2'},
+  glycogen:{sub:'G6P → G1P → UDP-glucose',prod:'ไกลโคเจน',enz:'Glycogen synthase',
+        rt:'Glycosyl transfer',cb:6,ca:6,cof:'UTP',en:'UTP −1'},
+  pgi:{sub:'Glucose-6-phosphate',prod:'Fructose-6-phosphate',enz:'Phosphoglucose isomerase',
+        rt:'Aldose–ketose isomerization',cb:6,ca:6,cof:'—',en:'—'},
+  pfk1:{sub:'F6P + ATP',prod:'F1,6BP + ADP',enz:'Phosphofructokinase-1',
+        rt:'Phosphorylation',cb:6,ca:6,cof:'Mg²⁺',en:'ATP −1'},
+  aldolase:{sub:'Fructose-1,6-bisphosphate',prod:'DHAP + GAP',enz:'Aldolase',
+        rt:'Aldol cleavage',cb:6,ca:'3 + 3',cof:'—',en:'—'},
+  tpi:{sub:'DHAP',prod:'Glyceraldehyde-3-phosphate',enz:'Triose phosphate isomerase',
+        rt:'Isomerization',cb:3,ca:3,cof:'—',en:'—'},
+  gapdh:{sub:'GAP + Pi + NAD⁺',prod:'1,3-BPG + NADH + H⁺',enz:'GAP dehydrogenase',
+        rt:'Oxidation + phosphorylation',cb:3,ca:3,cof:'NAD⁺ · Pi',en:'NADH +2'},
+  pgk:{sub:'1,3-BPG + ADP',prod:'3-PG + ATP',enz:'Phosphoglycerate kinase',
+        rt:'Substrate-level phosphorylation',cb:3,ca:3,cof:'Mg²⁺',en:'ATP +2'},
+  mutase:{sub:'3-Phosphoglycerate',prod:'2-Phosphoglycerate',enz:'Phosphoglycerate mutase',
+        rt:'Phosphate transfer C3 → C2',cb:3,ca:3,cof:'—',en:'—'},
+  enolase:{sub:'2-Phosphoglycerate',prod:'PEP + H₂O',enz:'Enolase',
+        rt:'Dehydration',cb:3,ca:3,cof:'Mg²⁺',en:'—'},
+  pk:{sub:'PEP + ADP',prod:'ไพรูเวต + ATP',enz:'Pyruvate kinase',
+        rt:'Substrate-level phosphorylation',cb:3,ca:3,cof:'Mg²⁺ · K⁺',en:'ATP +2'},
+  pyruvate:{sub:'ไพรูเวต (ไซโทซอล)',prod:'ไพรูเวต (เมทริกซ์)',enz:'Pyruvate carrier (MPC)',
+        rt:'Transport ข้ามเยื่อชั้นใน',cb:3,ca:3,cof:'—',en:'—'},
+  anaerobic:{sub:'ไพรูเวต + NADH',prod:'แลกเตต + NAD⁺',enz:'Lactate dehydrogenase',
+        rt:'Reduction',cb:3,ca:3,cof:'NADH',en:'คืน NAD⁺'},
+  accounting:{sub:'กลูโคส 1 โมเลกุล',prod:'ไพรูเวต 2 + ATP 2 + NADH 2',enz:'สรุปไกลโคไลซิส',
+        rt:'ATP accounting',cb:6,ca:'3 + 3',cof:'—',en:'ATP สุทธิ +2'},
+
+  pdh:{sub:'ไพรูเวต + CoA + NAD⁺',prod:'acetyl-CoA + NADH + CO₂',enz:'PDH complex',
+        rt:'Oxidative decarboxylation',cb:3,ca:2,cof:'TPP · lipoamide · FAD · NAD⁺ · CoA',en:'NADH +2'},
+  citratesynthase:{sub:'acetyl-CoA (2C) + OAA (4C)',prod:'citrate + CoA',enz:'Citrate synthase',
+        rt:'Aldol condensation',cb:'2 + 4',ca:6,cof:'CoA',en:'—'},
+  aconitase:{sub:'Citrate',prod:'Isocitrate',enz:'Aconitase',
+        rt:'Isomerization (dehydration–rehydration)',cb:6,ca:6,cof:'Fe–S cluster',en:'—'},
+  idh:{sub:'Isocitrate + NAD⁺',prod:'α-ketoglutarate + NADH + CO₂',enz:'Isocitrate dehydrogenase',
+        rt:'Oxidative decarboxylation',cb:6,ca:5,cof:'NAD⁺',en:'NADH +2'},
+  kgdh:{sub:'α-KG + CoA + NAD⁺',prod:'succinyl-CoA + NADH + CO₂',enz:'α-KG dehydrogenase',
+        rt:'Oxidative decarboxylation',cb:5,ca:4,cof:'TPP · lipoamide · FAD · NAD⁺ · CoA',en:'NADH +2'},
+  scs:{sub:'succinyl-CoA + GDP + Pi',prod:'succinate + GTP + CoA',enz:'Succinyl-CoA synthetase',
+        rt:'Substrate-level phosphorylation',cb:4,ca:4,cof:'CoA',en:'GTP +2'},
+  sdh:{sub:'Succinate + FAD',prod:'Fumarate + FADH₂',enz:'Succinate dehydrogenase (Complex II)',
+        rt:'Oxidation (dehydrogenation)',cb:4,ca:4,cof:'FAD · Fe–S',en:'FADH₂ +2'},
+  fumarase:{sub:'Fumarate + H₂O',prod:'Malate',enz:'Fumarase',
+        rt:'Hydration',cb:4,ca:4,cof:'—',en:'—'},
+  mdh:{sub:'Malate + NAD⁺',prod:'Oxaloacetate + NADH',enz:'Malate dehydrogenase',
+        rt:'Oxidation',cb:4,ca:4,cof:'NAD⁺',en:'NADH +2'},
+  complex1:{sub:'NADH + CoQ',prod:'NAD⁺ + CoQH₂',enz:'Complex I',
+        rt:'Redox + ปั๊ม H⁺',cb:'—',ca:'—',cof:'FMN · Fe–S',en:'ปั๊ม H⁺ 4 ตัว'},
+  complex3:{sub:'CoQH₂ + cyt c (ox)',prod:'CoQ + cyt c (red)',enz:'Complex III',
+        rt:'Redox (Q cycle)',cb:'—',ca:'—',cof:'heme · Fe–S',en:'ปั๊ม H⁺ 4 ตัว'},
+  complex4:{sub:'cyt c (red) + O₂ + H⁺',prod:'cyt c (ox) + H₂O',enz:'Complex IV',
+        rt:'Reduction ของ O₂',cb:'—',ca:'—',cof:'heme a-a₃ · Cu',en:'ปั๊ม H⁺ 2 ตัว'},
+  atpsynthase:{sub:'ADP + Pi + H⁺ (ความชัน)',prod:'ATP',enz:'ATP synthase (F₀F₁)',
+        rt:'Chemiosmosis',cb:'—',ca:'—',cof:'—',en:'ATP ≈ +28'},
+  uncoupler:{sub:'ความชัน H⁺',prod:'ความร้อน',enz:'Thermogenin (UCP1)',
+        rt:'Uncoupling',cb:'—',ca:'—',cof:'—',en:'ไม่ได้ ATP'},
+  total:{sub:'กลูโคส + 6 O₂',prod:'6 CO₂ + 6 H₂O + ATP ≈30–32',enz:'สรุปทั้งกระบวนการ',
+        rt:'Cellular respiration',cb:6,ca:'6 × CO₂',cof:'—',en:'ATP ≈30–32'}
+};
+
+/* ===== §12.4 สมรรถนะ 7 ด้าน ===== */
+var COMPETENCY = {
+  substrate_product:'การจำแนกสารตั้งต้นและผลิตภัณฑ์',
+  functional_group:'การเปลี่ยนแปลงหมู่ฟังก์ชัน',
+  carbon_tracking:'การติดตามจำนวนคาร์บอน',
+  phosphate_position:'การเปลี่ยนตำแหน่งหมู่ฟอสเฟต',
+  energy_accounting:'ATP และ coenzyme accounting',
+  cellular_location:'ตำแหน่งที่เกิดปฏิกิริยาในเซลล์',
+  regulation_pathway:'การควบคุมและการเลือกเส้นทาง'
+};
+var CP_COMPETENCY = {
+  glut:'cellular_location',      hexokinase:'energy_accounting',  junction:'regulation_pathway',
+  glycogen:'regulation_pathway', pgi:'functional_group',          pfk1:'regulation_pathway',
+  aldolase:'carbon_tracking',    tpi:'carbon_tracking',           gapdh:'energy_accounting',
+  pgk:'phosphate_position',      mutase:'phosphate_position',     enolase:'functional_group',
+  pk:'regulation_pathway',       pyruvate:'cellular_location',    anaerobic:'energy_accounting',
+  accounting:'energy_accounting',
+  pdh:'substrate_product',       citratesynthase:'substrate_product', aconitase:'functional_group',
+  idh:'regulation_pathway',      kgdh:'substrate_product',        scs:'energy_accounting',
+  sdh:'cellular_location',       fumarase:'functional_group',     mdh:'substrate_product',
+  complex1:'cellular_location',  complex3:'substrate_product',    complex4:'regulation_pathway',
+  atpsynthase:'energy_accounting', uncoupler:'regulation_pathway', total:'energy_accounting'
+};
+
+/* ================= โครงสร้างโมเลกุล (ฉบับแก้ไขความถูกต้องทางเคมี) =================
+   หลักการวาด:
+   - น้ำตาลใช้ Haworth projection จริง: ออกซิเจนเป็น "มุมหนึ่งของวง" ไม่ใช่จุดกลางวง
+   - C6 (และ C1 ของฟรุกโทส) เป็นคาร์บอนนอกวง หมู่ฟอสเฟตต่อผ่านคาร์บอนนั้น ไม่ต่อเข้าวงตรง ๆ
+   - โซ่เปิดวาดแบบ skeletal: ทุกจุดหักคือคาร์บอน 1 อะตอม ป้ายปลายสายคือคาร์บอนของหมู่นั้นเอง
+   - hi:true = หมู่ที่เพิ่งเปลี่ยนในขั้นตอนนั้น (ไฮไลต์สีทอง)
+=============================================================================== */
+var INK='#123166', ACC='#1B4696';
+
+function _lbl(x,y,t,hi,anchor,size){
+  var col=hi?'#B8730A':ACC;
+  return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anchor||'middle')+'" font-size="'+(size||9.5)+
+    '" font-weight="700" fill="'+col+'" font-family="Kanit,sans-serif">'+t+'</text>';
+}
+function _pill(px,py,x,y,t,hi){
+  var col=hi?'#B8730A':ACC, bg=hi?'#FFE9A8':'#DCEBFF', bd=hi?'#F0A11E':'#7FB2E8';
+  var w=t.length*5.5+13;
+  return '<line x1="'+px+'" y1="'+py+'" x2="'+x+'" y2="'+y+'" stroke="'+col+
+      '" stroke-width="'+(hi?2.4:1.8)+'"/>'+
+    '<rect x="'+(x-w/2)+'" y="'+(y-8)+'" width="'+w+'" height="16" rx="5" fill="'+bg+
+      '" stroke="'+bd+'" stroke-width="'+(hi?2:1.3)+'"/>'+
+    '<text x="'+x+'" y="'+(y+4)+'" text-anchor="middle" font-size="8.4" font-weight="700" fill="'+col+
+      '" font-family="Kanit,sans-serif">'+t+'</text>';
+}
+function _dot(x,y){return '<circle cx="'+x+'" cy="'+y+'" r="2.6" fill="'+INK+'"/>';}
+function _wrap(s,w,h){
+  return '<svg viewBox="0 0 '+(w||150)+' '+(h||106)+'" xmlns="http://www.w3.org/2000/svg" class="mol">'+
+    s+'</svg>';
+}
+
+/* ---------- Haworth: วงไพราโนส 6 เหลี่ยม (O เป็นมุมบนขวา) ---------- */
+function haworthPyranose(o){
+  o=o||{};
+  var W=150,H=124;
+  /* มุมวง: O, C1, C2, C3, C4, C5 — ขอบหน้า (C2–C3) วาดหนากว่าตามแบบ Haworth */
+  var O ={x:100,y:44}, C1={x:124,y:60}, C2={x:112,y:82},
+      C3={x: 70,y:82}, C4={x: 46,y:60}, C5={x: 70,y:44};
+  var s='';
+  /* ขอบหลัง (บาง) */
+  s+='<path d="M'+C5.x+' '+C5.y+' L'+O.x+' '+O.y+' L'+C1.x+' '+C1.y+'" fill="none" stroke="'+INK+
+     '" stroke-width="1.9" stroke-linejoin="round"/>';
+  s+='<path d="M'+C4.x+' '+C4.y+' L'+C5.x+' '+C5.y+'" fill="none" stroke="'+INK+'" stroke-width="1.9"/>';
+  /* ขอบหน้า (หนา) */
+  s+='<path d="M'+C4.x+' '+C4.y+' L'+C3.x+' '+C3.y+' L'+C2.x+' '+C2.y+' L'+C1.x+' '+C1.y+
+     '" fill="none" stroke="'+INK+'" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  /* ออกซิเจนของวง — เป็นมุมของวง ไม่ใช่จุดกลาง */
+  s+='<circle cx="'+O.x+'" cy="'+O.y+'" r="8" fill="#FFFFFF"/>';
+  s+=_lbl(O.x,O.y+3.5,'O',false,'middle',11);
+  /* C6 นอกวง ยื่นขึ้นจาก C5 */
+  var C6={x:C5.x-4,y:C5.y-20};
+  s+='<line x1="'+C5.x+'" y1="'+C5.y+'" x2="'+C6.x+'" y2="'+C6.y+'" stroke="'+INK+'" stroke-width="2"/>';
+  s+=_dot(C6.x,C6.y);
+  s+=_lbl(C6.x-13,C6.y+3,'CH₂',false,'middle',8.5);
+  /* หมู่บน C6 (–OH หรือ –OPO₃²⁻) */
+  s+=_pill(C6.x,C6.y,C6.x+2,C6.y-18,o.c6||'OH',!!o.c6hi);
+  /* หมู่บน C1 (anomeric) */
+  s+=_pill(C1.x,C1.y,C1.x+16,C1.y+16,o.c1||'OH',!!o.c1hi);
+  /* –OH บน C2, C3, C4 */
+  s+=_lbl(C2.x+4,C2.y+16,'OH');
+  s+=_lbl(C3.x-4,C3.y+16,'OH');
+  s+=_lbl(C4.x-14,C4.y+5,'HO');
+  s+=_lbl(W/2,H-3,o.name||'',false,'middle',8.5);
+  return _wrap(s,W,H);
+}
+
+/* ---------- Haworth: วงฟูราโนส 5 เหลี่ยม (ฟรุกโทส) ---------- */
+function haworthFuranose(o){
+  o=o||{};
+  var W=150,H=124;
+  /* O บนสุด, C2 ขวา, C3 ล่างขวา, C4 ล่างซ้าย, C5 ซ้าย */
+  var O ={x:84,y:40}, C2={x:116,y:58}, C3={x:104,y:84},
+      C4={x: 64,y:84}, C5={x: 52,y:58};
+  var s='';
+  s+='<path d="M'+C5.x+' '+C5.y+' L'+O.x+' '+O.y+' L'+C2.x+' '+C2.y+
+     '" fill="none" stroke="'+INK+'" stroke-width="1.9" stroke-linejoin="round"/>';
+  s+='<path d="M'+C5.x+' '+C5.y+' L'+C4.x+' '+C4.y+' L'+C3.x+' '+C3.y+' L'+C2.x+' '+C2.y+
+     '" fill="none" stroke="'+INK+'" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  s+='<circle cx="'+O.x+'" cy="'+O.y+'" r="8" fill="#FFFFFF"/>';
+  s+=_lbl(O.x,O.y+3.5,'O',false,'middle',11);
+  /* C1: ฟรุกโทสมี CH₂ นอกวง / ไรโบสเป็นคาร์บอนอะโนเมอริกมี –OH บนวง */
+  if(o.noC1){
+    s+=_pill(C2.x,C2.y,C2.x+22,C2.y+4,o.c1||'OH',!!o.c1hi);
+  }else{
+    var C1={x:C2.x+14,y:C2.y-20};
+    s+='<line x1="'+C2.x+'" y1="'+C2.y+'" x2="'+C1.x+'" y2="'+C1.y+'" stroke="'+INK+'" stroke-width="2"/>';
+    s+=_dot(C1.x,C1.y);
+    s+=_lbl(C1.x+2,C1.y-11,'CH₂',false,'middle',8.5);
+    s+=_pill(C1.x,C1.y,C1.x+4,C1.y-26,o.c1||'OH',!!o.c1hi);
+  }
+  /* C6 นอกวง ยื่นขึ้นซ้ายจาก C5 */
+  var C6={x:C5.x-12,y:C5.y-20};
+  s+='<line x1="'+C5.x+'" y1="'+C5.y+'" x2="'+C6.x+'" y2="'+C6.y+'" stroke="'+INK+'" stroke-width="2"/>';
+  s+=_dot(C6.x,C6.y);
+  s+=_lbl(C6.x-13,C6.y+3,'CH₂',false,'middle',8.5);
+  s+=_pill(C6.x,C6.y,C6.x-2,C6.y-18,o.c6||'OPO₃²⁻',!!o.c6hi);
+  /* –OH บนวง */
+  if(!o.noC1) s+=_lbl(C2.x+13,C2.y+8,'OH');
+  s+=_lbl(C3.x+3,C3.y+15,'OH');
+  s+=_lbl(C4.x-3,C4.y+15,'OH');
+  s+=_lbl(W/2,H-3,o.name||'',false,'middle',8.5);
+  return _wrap(s,W,H);
+}
+
+/* ---------- โซ่เปิดแบบ skeletal ----------
+   v = จำนวนคาร์บอนในโซ่หลัก (ทุกจุดหัก = คาร์บอน 1 อะตอม)
+   ends = ป้ายที่ปลายสองข้าง (คาร์บอนของหมู่นั้นเอง)
+   up/down = หมู่ที่ต่อขึ้น/ลงจากคาร์บอนตำแหน่ง i
+   dbl = พันธะคู่ระหว่าง i กับ i+1                                            */
+function chainMol(cfg){
+  var W=cfg.W||150, H=cfg.H||106;
+  var n=cfg.v, cx=W/2, cy=H/2+2;
+  var span=Math.min(W-56, (n-1)*26);
+  var pts=[];
+  for(var i=0;i<n;i++){
+    var x = n===1?cx : cx-span/2+(span/(n-1))*i;
+    pts.push({x:x, y:cy+(i%2===0?8:-8)});
+  }
+  var s='';
+  if(n>1){
+    s+='<path d="M'+pts.map(function(p){return p.x.toFixed(1)+' '+p.y.toFixed(1);}).join(' L ')+
+       '" fill="none" stroke="'+INK+'" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+  (cfg.dbl||[]).forEach(function(d){
+    var a=pts[d], b=pts[d+1]; if(!a||!b)return;
+    var ox=(b.y-a.y)*.18, oy=-(b.x-a.x)*.18;
+    s+='<line x1="'+(a.x+ox).toFixed(1)+'" y1="'+(a.y+oy).toFixed(1)+'" x2="'+(b.x+ox).toFixed(1)+
+       '" y2="'+(b.y+oy).toFixed(1)+'" stroke="'+INK+'" stroke-width="2.2"/>';
+  });
+  pts.forEach(function(p){s+=_dot(p.x,p.y);});
+  if(cfg.left)  s+=_lbl(pts[0].x-13, pts[0].y+4, cfg.left, cfg.leftHi, 'end', 9.5);
+  if(cfg.right) s+=_lbl(pts[n-1].x+13, pts[n-1].y+4, cfg.right, cfg.rightHi, 'start', 9.5);
+  (cfg.up||[]).forEach(function(u){
+    var p=pts[u.i]; s+=_pill(p.x,p.y,p.x+(u.dx||0),p.y-22,u.t,!!u.hi);
+  });
+  (cfg.down||[]).forEach(function(dn){
+    var p=pts[dn.i]; s+=_pill(p.x,p.y,p.x+(dn.dx||0),p.y+22,dn.t,!!dn.hi);
+  });
+  s+=_lbl(W/2,H-3,cfg.name||'',false,'middle',8.5);
+  return _wrap(s,W,H);
+}
+
+/* =================== นิยามแต่ละสาร (ตรวจสอบสูตรแล้ว) =================== */
+var MOLS = {
+  /* --- น้ำตาล --- */
+  glucose:  function(){return haworthPyranose({c6:'OH', c1:'OH', name:'กลูโคส (C6)'});},
+  g6p:      function(){return haworthPyranose({c6:'OPO₃²⁻', c6hi:true, c1:'OH',
+                          name:'กลูโคส-6-ฟอสเฟต (C6)'});},
+  f6p:      function(){return haworthFuranose({c1:'OH', c6:'OPO₃²⁻',
+                          name:'ฟรุกโทส-6-ฟอสเฟต (C6)'});},
+  f16bp:    function(){return haworthFuranose({c1:'OPO₃²⁻', c1hi:true, c6:'OPO₃²⁻',
+                          name:'ฟรุกโทส-1,6-บิสฟอสเฟต (C6)'});},
+  ribose5p: function(){return haworthFuranose({noC1:true, c1:'OH', c6:'OPO₃²⁻',
+                          name:'ไรโบส-5-ฟอสเฟต (C5)'});},
+  glycogen: function(){return haworthPyranose({c6:'OH', c1:'O–(1→4)', c1hi:true,
+                          name:'ไกลโคเจน (พันธะ α-1,4)'});},
+
+  /* --- น้ำตาลสามคาร์บอน --- */
+  /* DHAP: CH₂OH–C(=O)–CH₂OPO₃²⁻ */
+  dhap:  function(){return chainMol({v:3, left:'HOH₂C', up:[{i:1,t:'C=O'}],
+            down:[{i:2,t:'OPO₃²⁻',dx:6}], name:'DHAP (C3)'});},
+  /* GAP: CHO–CHOH–CH₂OPO₃²⁻ */
+  gap:   function(){return chainMol({v:3, left:'OHC', up:[{i:1,t:'OH'}],
+            down:[{i:2,t:'OPO₃²⁻',dx:6}], name:'กลีเซอรัลดีไฮด์-3-ฟอสเฟต (C3)'});},
+  /* 1,3-BPG: C1 เป็น acyl phosphate — มีทั้ง =O และ OPO₃²⁻ บนคาร์บอนเดียวกัน */
+  bpg13: function(){return chainMol({v:3, up:[{i:0,t:'O',dx:-8,hi:true},{i:1,t:'OH'}],
+            down:[{i:0,t:'OPO₃²⁻',dx:-10,hi:true},{i:2,t:'OPO₃²⁻',dx:8}],
+            name:'1,3-BPG · C1 เป็น acyl phosphate'});},
+  pg3:   function(){return chainMol({v:3, left:'⁻OOC', up:[{i:1,t:'OH'}],
+            down:[{i:2,t:'OPO₃²⁻',dx:6}], name:'3-ฟอสโฟกลีเซอเรต (C3)'});},
+  pg2:   function(){return chainMol({v:3, left:'⁻OOC', up:[{i:1,t:'OPO₃²⁻',hi:true}],
+            down:[{i:2,t:'OH',dx:4}], name:'2-ฟอสโฟกลีเซอเรต (C3)'});},
+  /* PEP: C2=C3 พันธะคู่ + ฟอสเฟตบน C2 */
+  pep:   function(){return chainMol({v:3, left:'⁻OOC', dbl:[1],
+            up:[{i:1,t:'OPO₃²⁻',hi:true}], down:[{i:2,t:'CH₂',dx:4}],
+            name:'PEP · enol phosphate พลังงานสูง'});},
+  pyruvate: function(){return chainMol({v:3, left:'⁻OOC', right:'CH₃',
+            up:[{i:1,t:'C=O',hi:true}], name:'ไพรูเวต (C3)'});},
+  lactate:  function(){return chainMol({v:3, left:'⁻OOC', right:'CH₃',
+            up:[{i:1,t:'OH',hi:true}], name:'แลกเตต (C3)'});},
+
+  /* --- acetyl-CoA: CH₃–C(=O)–S–CoA --- */
+  acetylcoa: function(){return chainMol({v:2, left:'H₃C',
+            up:[{i:1,t:'O',dx:0}], down:[{i:1,t:'S–CoA',dx:12,hi:true}],
+            name:'อะเซทิล-CoA (2 คาร์บอน)'});},
+
+  /* --- กรดของวัฏจักรเครบส์ --- */
+  /* OAA: ⁻OOC–CO–CH₂–COO⁻ (C4) คีโตอยู่ที่ C2 */
+  oaa: function(){return chainMol({v:4, left:'⁻OOC', right:'COO⁻',
+            up:[{i:1,t:'C=O'}], name:'ออกซาโลอะซิเตต (C4)'});},
+  /* citrate: HOOC–CH₂–C(OH)(COOH)–CH₂–COOH (C6) — คาร์บอนกลางมีทั้ง OH และ COO⁻ */
+  citrate: function(){return chainMol({v:5, left:'⁻OOC', right:'COO⁻',
+            up:[{i:2,t:'OH',hi:true}], down:[{i:2,t:'COO⁻'}],
+            name:'ซิเตรต (C6) · แอลกอฮอล์ตติยภูมิ'});},
+  /* isocitrate: OH ย้ายไปคาร์บอนข้างเคียง กลายเป็นแอลกอฮอล์ทุติยภูมิ */
+  isocitrate: function(){return chainMol({v:5, left:'⁻OOC', right:'COO⁻',
+            up:[{i:3,t:'OH',hi:true}], down:[{i:2,t:'COO⁻'}],
+            name:'ไอโซซิเตรต (C6) · แอลกอฮอล์ทุติยภูมิ'});},
+  /* α-KG: ⁻OOC–CO–CH₂–CH₂–COO⁻ (C5) — คีโตต้องอยู่ที่ C2 ติดคาร์บอกซิล */
+  akg: function(){return chainMol({v:5, left:'⁻OOC', right:'COO⁻',
+            up:[{i:1,t:'C=O',hi:true}], name:'α-คีโตกลูตาเรต (C5) · คีโตที่ C2'});},
+  /* succinyl-CoA: ⁻OOC–CH₂–CH₂–C(=O)–S–CoA (C4) */
+  succinylcoa: function(){return chainMol({v:4, left:'⁻OOC',
+            up:[{i:3,t:'O',dx:0}], down:[{i:3,t:'S–CoA',dx:12,hi:true}],
+            name:'ซักซินิล-CoA (C4) · พันธะไทโออีสเทอร์'});},
+  succinate: function(){return chainMol({v:4, left:'⁻OOC', right:'COO⁻',
+            name:'ซักซิเนต (C4)'});},
+  fumarate: function(){return chainMol({v:4, left:'⁻OOC', right:'COO⁻', dbl:[1],
+            name:'ฟูมาเรต (C4) · พันธะคู่ trans'});},
+  malate: function(){return chainMol({v:4, left:'⁻OOC', right:'COO⁻',
+            up:[{i:1,t:'OH',hi:true}], name:'มาเลต (C4)'});},
+
+  /* --- อื่น ๆ --- */
+  co2:  function(){return _wrap(_lbl(75,56,'O=C=O',false,'middle',20)+
+            _lbl(75,80,'คาร์บอนไดออกไซด์',false,'middle',8.5));},
+  h2o:  function(){return _wrap(_lbl(75,56,'H₂O',false,'middle',22)+
+            _lbl(75,80,'น้ำ',false,'middle',8.5));},
+  nadh: function(){return _wrap(_lbl(75,54,'NADH',false,'middle',19)+
+            _lbl(75,74,'ตัวพาอิเล็กตรอน',false,'middle',8.5));},
+  atp:  function(){return _wrap(
+            '<line x1="34" y1="52" x2="112" y2="52" stroke="'+INK+'" stroke-width="2"/>'+
+            _lbl(28,56,'อะดีโนซีน',false,'end',8.5)+
+            _pill(52,52,52,52,'P',false)+_pill(80,52,80,52,'P',false)+
+            _pill(108,52,108,52,'P',true)+
+            _lbl(75,84,'ATP · พันธะฟอสเฟตพลังงานสูง',false,'middle',8.5));},
+  none: function(){return _wrap(_lbl(75,58,'—',false,'middle',18));}
+};
+
+function structFor(key){ return (MOLS[key]||MOLS.none)(); }
+
+/* คู่ สารตั้งต้น → ผลิตภัณฑ์ ของแต่ละด่าน */
+var STRUCT_PAIR = {
+  glut:{a:'glucose',b:'glucose'},           hexokinase:{a:'glucose',b:'g6p'},
+  junction:{a:'g6p',b:'ribose5p'},          glycogen:{a:'g6p',b:'glycogen'},
+  pgi:{a:'g6p',b:'f6p'},                    pfk1:{a:'f6p',b:'f16bp'},
+  aldolase:{a:'f16bp',b:'gap',b2:'dhap'},   tpi:{a:'dhap',b:'gap'},
+  gapdh:{a:'gap',b:'bpg13'},                pgk:{a:'bpg13',b:'pg3'},
+  mutase:{a:'pg3',b:'pg2'},                 enolase:{a:'pg2',b:'pep'},
+  pk:{a:'pep',b:'pyruvate'},                pyruvate:{a:'pyruvate',b:'pyruvate'},
+  anaerobic:{a:'pyruvate',b:'lactate'},     accounting:{a:'glucose',b:'pyruvate'},
+  pdh:{a:'pyruvate',b:'acetylcoa'},         citratesynthase:{a:'oaa',b:'citrate'},
+  aconitase:{a:'citrate',b:'isocitrate'},   idh:{a:'isocitrate',b:'akg'},
+  kgdh:{a:'akg',b:'succinylcoa'},           scs:{a:'succinylcoa',b:'succinate'},
+  sdh:{a:'succinate',b:'fumarate'},         fumarase:{a:'fumarate',b:'malate'},
+  mdh:{a:'malate',b:'oaa'},                 complex1:{a:'nadh',b:'atp'},
+  complex3:{a:'nadh',b:'atp'},              complex4:{a:'nadh',b:'h2o'},
+  atpsynthase:{a:'none',b:'atp'},           uncoupler:{a:'none',b:'none'},
+  total:{a:'glucose',b:'co2'}
+};
+
+var TAG_LABEL = {
+  'transport':'การขนส่งกลูโคสเข้าเซลล์',
+  'glycolysis-location':'ตำแหน่งที่เกิดไกลโคไลซิส',
+  'reaction-logic':'เหตุผลของแต่ละปฏิกิริยา',
+  'mito-import':'สารที่เข้าไมโทคอนเดรีย',
+  'nadh-vs-nadph':'หน้าที่ของ NADH เทียบกับ NADPH',
+  'regulation':'การควบคุมวิถี (regulation)',
+  'atp-accounting':'การคิดบัญชี ATP',
+  'compartment':'ตำแหน่งภายในไมโทคอนเดรีย'
+};
+
+/* ---------------- ตำแหน่งบนแผนที่เซลล์ (viewBox 1200x720) ---------------- */
+var MAP = {
+  glut:       {x:178, y:232, n:'▶'},
+  hexokinase: {x:286, y:288, n:1},
+  junction:   {x:392, y:232, n:'◆'},
+  glycogen:   {x:300, y:120, n:'★'},
+  pgi:        {x:498, y:288, n:2},
+  pfk1:       {x:604, y:232, n:3},
+  aldolase:   {x:710, y:288, n:4},
+  tpi:        {x:816, y:232, n:5},
+  gapdh:      {x:816, y:404, n:6},
+  pgk:        {x:700, y:456, n:7},
+  mutase:     {x:584, y:404, n:8},
+  enolase:    {x:468, y:456, n:9},
+  pk:         {x:352, y:404, n:10},
+  pyruvate:   {x:452, y:544, n:'●'},
+  anaerobic:  {x:300, y:648, n:'○'},
+  accounting: {x:280, y:516, n:'Σ'}
+};
+var PPP_LAB = {x:1032, y:150};
+var MITO    = {x:930, y:612};
+
+var CARDS = [
+  {id:'glut',       n:'▶', gl:'🚪', nm:'GLUT',       sb:'ขนส่งเข้าเซลล์'},
+  {id:'hexokinase', n:1,   gl:'🔒', nm:'Hexokinase', sb:'ใช้ ATP −1'},
+  {id:'junction',   n:'◆', gl:'🧪', nm:'PPP',        sb:'สร้าง NADPH'},
+  {id:'glycogen',   n:'★', gl:'🍇', nm:'Glycogen',   sb:'เก็บสะสม'},
+  {id:'pgi',        n:2,   gl:'🔄', nm:'PGI',        sb:'G6P→F6P'},
+  {id:'pfk1',       n:3,   gl:'🎛️', nm:'PFK-1',      sb:'ใช้ ATP −1'},
+  {id:'aldolase',   n:4,   gl:'✂️', nm:'Aldolase',   sb:'ตัดเป็น 2 ชิ้น'},
+  {id:'tpi',        n:5,   gl:'⇌',  nm:'TPI',        sb:'DHAP→GAP'},
+  {id:'gapdh',      n:6,   gl:'⬡',  nm:'GAPDH',      sb:'NADH +2'},
+  {id:'pgk',        n:7,   gl:'⚡', nm:'PGK',        sb:'ATP +2'},
+  {id:'mutase',     n:8,   gl:'🔀', nm:'Mutase',     sb:'3-PG→2-PG'},
+  {id:'enolase',    n:9,   gl:'💧', nm:'Enolase',    sb:'ดึงน้ำออก'},
+  {id:'pk',         n:10,  gl:'⚡', nm:'PK',         sb:'ATP +2'},
+  {id:'pyruvate',   n:'●', gl:'🟣', nm:'ไพรูเวต',    sb:'ปลายทาง'},
+  {id:'anaerobic',  n:'○', gl:'💨', nm:'แลกเตต',     sb:'ไร้ออกซิเจน'},
+  {id:'accounting', n:'Σ', gl:'🧮', nm:'สรุป ATP',   sb:'ปิดบัญชี'},
+  {id:'tca',        n:'',  gl:'🔄', nm:'TCA',        sb:'Phase 2', locked:true},
+  {id:'etc',        n:'',  gl:'🔋', nm:'ETC',        sb:'Phase 2', locked:true}
+];
+
+var ORDER = ['glut','hexokinase','junction','pgi','pfk1','aldolase','tpi',
+             'gapdh','pgk','mutase','enolase','pk','pyruvate','anaerobic','accounting'];
+
+/* ---------------- Phase 2 · ตำแหน่งบนแผนที่ไมโทคอนเดรีย ---------------- */
+var MAP2 = {
+  pdh:             {x:138, y:150, n:'▶'},
+  citratesynthase: {x:450, y:170, n:1},
+  aconitase:       {x:563, y:217, n:2},
+  idh:             {x:610, y:330, n:3},
+  kgdh:            {x:563, y:443, n:4},
+  scs:             {x:450, y:490, n:5},
+  sdh:             {x:337, y:443, n:6},
+  fumarase:        {x:290, y:330, n:7},
+  mdh:             {x:337, y:217, n:8},
+  complex1:        {x:800, y:474, n:'I'},
+  complex3:        {x:918, y:474, n:'III'},
+  complex4:        {x:1036,y:474, n:'IV'},
+  atpsynthase:     {x:1126,y:474, n:'⚙'},
+  uncoupler:       {x:1040,y:330, n:'★'},
+  total:           {x:868, y:212, n:'Σ'}
+};
+var RING = {x:450, y:330, r:160};
+
+var CARDS2 = [
+  {id:'pdh',             n:'▶',  gl:'🚪', nm:'PDH',        sb:'ไพรูเวต→AcCoA'},
+  {id:'citratesynthase', n:1,    gl:'🍋', nm:'Citrate S.',  sb:'OAA+AcCoA'},
+  {id:'aconitase',       n:2,    gl:'🔄', nm:'Aconitase',   sb:'ย้าย –OH'},
+  {id:'idh',             n:3,    gl:'⬡',  nm:'IDH',         sb:'NADH+CO₂'},
+  {id:'kgdh',            n:4,    gl:'⬡',  nm:'α-KGDH',      sb:'NADH+CO₂'},
+  {id:'scs',             n:5,    gl:'⚡', nm:'SCS',         sb:'GTP +2'},
+  {id:'sdh',             n:6,    gl:'🔋', nm:'SDH',         sb:'FADH₂ +2'},
+  {id:'fumarase',        n:7,    gl:'💧', nm:'Fumarase',    sb:'เติมน้ำ'},
+  {id:'mdh',             n:8,    gl:'⬡',  nm:'MDH',         sb:'คืน OAA'},
+  {id:'complex1',        n:'I',  gl:'🔌', nm:'Complex I',   sb:'ปั๊ม H⁺'},
+  {id:'complex3',        n:'III',gl:'🔌', nm:'Complex III', sb:'→ cyt c'},
+  {id:'complex4',        n:'IV', gl:'🫁', nm:'Complex IV',  sb:'O₂ → H₂O'},
+  {id:'atpsynthase',     n:'⚙',  gl:'⚙️', nm:'ATP synthase',sb:'สร้าง ATP'},
+  {id:'uncoupler',       n:'★',  gl:'🔥', nm:'Uncoupler',   sb:'ความร้อน'},
+  {id:'total',           n:'Σ',  gl:'🧮', nm:'สรุปรวม',     sb:'≈30–32 ATP'}
+];
+
+var ORDER2 = ['pdh','citratesynthase','aconitase','idh','kgdh','scs','sdh','fumarase','mdh',
+              'complex1','complex3','complex4','atpsynthase','total'];
+
+/* ---------------- ฉาก Phase 2 ---------------- */
+function buildScene2(){
+  var s='';
+  s+='<defs>'+
+   '<radialGradient id="matrixG" cx="42%" cy="32%">'+
+     '<stop offset="0%" stop-color="#C4553F"/><stop offset="100%" stop-color="#7E2418"/></radialGradient>'+
+   '<linearGradient id="imsG" x1="0" y1="0" x2="0" y2="1">'+
+     '<stop offset="0%" stop-color="#123166"/><stop offset="100%" stop-color="#0A1B3D"/></linearGradient>'+
+   '<radialGradient id="glucoseG" cx="35%" cy="30%">'+
+     '<stop offset="0%" stop-color="#FFF0B8"/><stop offset="100%" stop-color="#F0A11E"/></radialGradient>'+
+   '<filter id="soft2" x="-30%" y="-30%" width="160%" height="160%">'+
+     '<feGaussianBlur stdDeviation="9"/></filter>'+
+   '</defs>';
+
+  /* ช่องระหว่างเยื่อ + เยื่อชั้นนอก */
+  s+='<rect x="0" y="0" width="1200" height="720" fill="url(#imsG)"/>';
+  s+='<rect x="0" y="612" width="1200" height="108" fill="#16407A" opacity=".55"/>';
+  s+='<text x="330" y="700" fill="#9FC0EA" font-size="15" font-weight="600" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle" opacity=".8">'+
+     'ช่องระหว่างเยื่อ · H⁺ สะสมที่นี่</text>';
+
+  /* เมทริกซ์ */
+  s+='<path d="M0 0 L1200 0 L1200 548 Q600 596 0 548 Z" fill="url(#matrixG)" opacity=".92"/>';
+  s+='<ellipse cx="470" cy="300" rx="420" ry="250" fill="#E08060" opacity=".12" filter="url(#soft2)"/>';
+  s+='<text x="700" y="116" fill="#FFD9C4" font-size="22" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle" opacity=".5">เมทริกซ์ (Matrix)</text>';
+
+  /* เยื่อชั้นใน (มีรอยพับ cristae) */
+  s+='<path d="M0 548 Q600 596 1200 548 L1200 612 Q600 660 0 612 Z" fill="#B0442E" '+
+     'stroke="#F2A07A" stroke-width="4"/>';
+  s+='<text x="250" y="592" fill="#FFE0CE" font-size="14" font-weight="700" '+
+     'font-family="Kanit,sans-serif">เยื่อไมโทคอนเดรียชั้นใน (Inner membrane)</text>';
+
+  /* วงวัฏจักรเครบส์ */
+  s+='<circle cx="'+RING.x+'" cy="'+RING.y+'" r="'+RING.r+'" fill="none" stroke="#FFD9C4" '+
+     'stroke-width="14" opacity=".18"/>';
+  s+='<circle cx="'+RING.x+'" cy="'+RING.y+'" r="'+RING.r+'" fill="none" stroke="#FFE9A8" '+
+     'stroke-width="3" stroke-dasharray="3 15" opacity=".65"/>';
+  s+='<text x="'+RING.x+'" y="'+(RING.y-8)+'" fill="#FFE9D6" font-size="21" font-weight="800" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">วัฏจักรเครบส์</text>'+
+     '<text x="'+RING.x+'" y="'+(RING.y+16)+'" fill="#FFC9A8" font-size="14" font-weight="600" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">TCA cycle · 2 รอบต่อกลูโคส</text>';
+  /* ลูกศรทิศทางวัฏจักร */
+  s+='<path d="M'+(RING.x+RING.r-4)+' '+(RING.y-26)+' l14 26 l-14 26" fill="none" '+
+     'stroke="#FFE9A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>';
+
+  /* CO2 ที่ IDH และ KGDH */
+  [[664,286],[620,486]].forEach(function(c){
+    s+='<circle cx="'+c[0]+'" cy="'+c[1]+'" r="17" fill="#5C7386" opacity=".85"/>'+
+       '<text x="'+c[0]+'" y="'+(c[1]+5)+'" text-anchor="middle" font-size="11" fill="#E8F2F8" '+
+       'font-family="Kanit,sans-serif" font-weight="600">CO₂</text>';
+  });
+
+  /* ไพรูเวตเข้ามาจากไซโทซอล */
+  s+='<path d="M40 60 Q90 100 '+(MAP2.pdh.x-30)+' '+(MAP2.pdh.y-24)+'" fill="none" '+
+     'stroke="#FFD9C4" stroke-width="5" stroke-dasharray="10 8" opacity=".8"/>';
+  s+='<text x="52" y="44" fill="#FFE9A8" font-size="13" font-weight="700" '+
+     'font-family="Kanit,sans-serif">ไพรูเวตจากไซโทซอล</text>';
+  s+='<path d="M'+MAP2.pdh.x+' '+(MAP2.pdh.y+34)+' Q220 320 '+(MAP2.citratesynthase.x-64)+' '+
+     (MAP2.citratesynthase.y-6)+'" fill="none" stroke="#FFD9C4" stroke-width="5" '+
+     'stroke-dasharray="10 8" opacity=".7"/>';
+  s+='<text x="214" y="252" fill="#FFE9A8" font-size="13" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">acetyl-CoA</text>';
+
+  /* คอมเพล็กซ์บนเยื่อชั้นใน */
+  var comps=[
+    {x:800,  w:76, c:'#3E7FC8', t:'I'},
+    {x:918,  w:76, c:'#3E7FC8', t:'III'},
+    {x:1036, w:76, c:'#3E7FC8', t:'IV'}
+  ];
+  comps.forEach(function(c){
+    s+='<rect x="'+(c.x-c.w/2)+'" y="524" width="'+c.w+'" height="96" rx="14" fill="'+c.c+'" '+
+       'stroke="#9BD0FF" stroke-width="3"/>';
+  });
+  /* Complex II (SDH) ฝังบนเยื่อ ใต้ตำแหน่ง SDH ในวง */
+  s+='<rect x="654" y="536" width="66" height="80" rx="12" fill="#2F6BAA" stroke="#9BD0FF" stroke-width="3"/>'+
+     '<text x="687" y="584" text-anchor="middle" font-size="15" font-weight="800" fill="#DFF1FF" '+
+     'font-family="Kanit,sans-serif">II</text>'+
+     '<text x="687" y="512" text-anchor="middle" font-size="11" font-weight="700" fill="#BAE6FD" '+
+     'font-family="Kanit,sans-serif">SDH</text>';
+  /* ATP synthase */
+  s+='<rect x="1100" y="524" width="52" height="60" rx="10" fill="#C9962A" stroke="#FFE18A" stroke-width="3"/>'+
+     '<ellipse cx="1126" cy="600" rx="34" ry="22" fill="#E8B23C" stroke="#FFE18A" stroke-width="3"/>';
+
+  /* SDH ในวงคือคอมเพล็กซ์ II บนเยื่อ */
+  s+='<path d="M'+MAP2.sdh.x+' '+(MAP2.sdh.y+40)+' Q470 560 654 576" fill="none" '+
+     'stroke="#9BD0FF" stroke-width="3" stroke-dasharray="6 7" opacity=".6"/>';
+
+  /* CoQ และ cytochrome c */
+  s+='<circle cx="860" cy="574" r="17" fill="#7ED9F2" stroke="#DFF3FF" stroke-width="2"/>'+
+     '<text x="860" y="579" text-anchor="middle" font-size="11" font-weight="700" fill="#0A1B3D" '+
+     'font-family="Kanit,sans-serif">Q</text>';
+  s+='<circle cx="978" cy="562" r="16" fill="#F2A07A" stroke="#FFE0CE" stroke-width="2"/>'+
+     '<text x="978" y="567" text-anchor="middle" font-size="10" font-weight="700" fill="#3A1108" '+
+     'font-family="Kanit,sans-serif">cyt c</text>';
+
+  /* ลูกศร H+ ถูกปั๊มลงสู่ช่องระหว่างเยื่อ */
+  [800,918,1036].forEach(function(x){
+    s+='<path d="M'+x+' 626 l0 26" stroke="#9BD0FF" stroke-width="4" stroke-linecap="round" '+
+       'marker-end="url(#hArrow)" opacity=".9"/>';
+  });
+  s+='<defs><marker id="hArrow" markerWidth="9" markerHeight="9" refX="4" refY="7" orient="auto">'+
+     '<path d="M0,0 L8,0 L4,8 Z" fill="#9BD0FF"/></marker></defs>';
+  for(var i=0;i<16;i++){
+    var hx=90+i*70, hy=648+((i%3)*16);
+    s+='<circle cx="'+hx+'" cy="'+hy+'" r="9" fill="#9BD0FF" opacity=".55"/>'+
+       '<text x="'+hx+'" y="'+(hy+4)+'" text-anchor="middle" font-size="9" fill="#0A1B3D" '+
+       'font-family="Kanit,sans-serif" font-weight="700">H⁺</text>';
+  }
+  /* H+ ไหลกลับผ่าน ATP synthase */
+  s+='<path d="M1126 646 l0 -34" stroke="#FFE18A" stroke-width="5" stroke-linecap="round" opacity=".95"/>';
+
+  /* O2 → H2O ที่คอมเพล็กซ์ IV */
+  s+='<text x="1036" y="428" text-anchor="middle" font-size="13" font-weight="700" fill="#BAE6FD" '+
+     'font-family="Kanit,sans-serif">O₂ → H₂O</text>';
+  /* ATP ที่ ATP synthase */
+  s+='<text x="1126" y="428" text-anchor="middle" font-size="13" font-weight="800" fill="#FFE18A" '+
+     'font-family="Kanit,sans-serif">ATP</text>';
+
+  /* NADH / FADH2 ไหลลงสู่ห่วงโซ่ */
+  s+='<path d="M'+(RING.x+RING.r+10)+' '+(RING.y+90)+' Q700 470 786 520" fill="none" '+
+     'stroke="#C9A8F5" stroke-width="5" stroke-dasharray="11 8" opacity=".75"/>';
+  s+='<text x="726" y="452" fill="#DCC4FF" font-size="13" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">NADH</text>';
+
+  /* เส้นเชื่อมคอมเพล็กซ์ */
+  s+='<path d="M838 566 L842 566 M876 566 L880 566" stroke="#DFF3FF" stroke-width="3" opacity=".7"/>';
+
+  /* ป้ายห่วงโซ่ */
+  s+='<rect x="742" y="452" width="0" height="0"/>';
+  s+='<text x="980" y="700" fill="#BAE6FD" font-size="14" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">ห่วงโซ่ขนส่งอิเล็กตรอน (ETC)</text>';
+
+  /* เส้นทางเดินระหว่าง checkpoint */
+  var d='';
+  ORDER2.forEach(function(id,i){ var m=MAP2[id]; d+=(i===0?'M':'L')+m.x+' '+m.y+' '; });
+  s+='<path d="'+d+'" fill="none" stroke="#FFE9A8" stroke-width="3" stroke-linecap="round" '+
+     'stroke-linejoin="round" stroke-dasharray="2 14" opacity=".55"/>';
+
+  scene.innerHTML=s;
+}
+
+
+
+/* ---------------- helpers ---------------- */
+function el(t,c,h){var d=document.createElement(t);if(c)d.className=c;if(h!=null)d.innerHTML=h;return d;}
+function svgEl(t,a){var e=document.createElementNS('http://www.w3.org/2000/svg',t);
+  for(var k in a)e.setAttribute(k,a[k]);return e;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function now(){return Date.now();}
+function reduced(){return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}
+
+var ALL=CHECKPOINTS.concat(SIDE_QUESTS,CHECKPOINTS2,SIDE_QUESTS2), byId={};
+ALL.forEach(function(c){byId[c.id]=c;});
+var PH2={}; CHECKPOINTS2.concat(SIDE_QUESTS2).forEach(function(c){PH2[c.id]=true;});
+function phaseOf(id){return PH2[id]?2:1;}
+function posOf(id){return PH2[id]?MAP2[id]:MAP[id];}
+var FULL_ORDER=ORDER.concat(ORDER2);
+var displayPhase=1;
+
+/* ---------------- วาดฉากเซลล์ ---------------- */
+var scene=document.getElementById('scene');
+
+function buildScene1(){
+  var s='';
+  s+='<defs>'+
+   '<linearGradient id="cyto" x1="0" y1="0" x2="1" y2="1">'+
+     '<stop offset="0%" stop-color="#2A63B8"/><stop offset="55%" stop-color="#1B4585"/>'+
+     '<stop offset="100%" stop-color="#123166"/></linearGradient>'+
+   '<linearGradient id="outside" x1="0" y1="0" x2="1" y2="0">'+
+     '<stop offset="0%" stop-color="#0A1B3D"/><stop offset="100%" stop-color="#132F63"/></linearGradient>'+
+   '<radialGradient id="glucoseG" cx="35%" cy="30%">'+
+     '<stop offset="0%" stop-color="#FFF0B8"/><stop offset="100%" stop-color="#F0A11E"/></radialGradient>'+
+   '<radialGradient id="mitoG" cx="35%" cy="25%">'+
+     '<stop offset="0%" stop-color="#D9634A"/><stop offset="100%" stop-color="#8E2A20"/></radialGradient>'+
+   '<radialGradient id="labG" cx="40%" cy="30%">'+
+     '<stop offset="0%" stop-color="#2E7FB8"/><stop offset="100%" stop-color="#12406B"/></radialGradient>'+
+   '<filter id="soft" x="-30%" y="-30%" width="160%" height="160%">'+
+     '<feGaussianBlur stdDeviation="7"/></filter>'+
+   '</defs>';
+
+  /* พื้นหลัง */
+  s+='<rect x="0" y="0" width="1200" height="720" fill="url(#outside)"/>';
+  s+='<path d="M150 0 Q210 360 150 720 L1200 720 L1200 0 Z" fill="url(#cyto)"/>';
+  s+='<ellipse cx="540" cy="340" rx="380" ry="250" fill="#3B7FD4" opacity="0.12" filter="url(#soft)"/>';
+  s+='<text x="556" y="700" fill="#BBD8FF" opacity=".42" font-size="22" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">ไซโทซอล (Cytosol)</text>';
+
+  /* ป้ายกำกับสองช่วงของไกลโคไลซิส */
+  s+='<rect x="470" y="162" width="290" height="30" rx="10" fill="#0A1B3D" opacity=".55" '+
+     'stroke="#F0A11E" stroke-width="1.5"/>'+
+     '<text x="615" y="183" fill="#FFD86B" font-size="14" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">ช่วงลงทุน · Investment (ATP −2)</text>';
+  s+='<rect x="936" y="392" width="252" height="30" rx="10" fill="#0A1B3D" opacity=".55" '+
+     'stroke="#4ADE80" stroke-width="1.5"/>'+
+     '<text x="1062" y="413" fill="#8CF0B4" font-size="14" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">ช่วงเก็บเกี่ยว · Payoff (ATP +4)</text>';
+
+  /* เยื่อหุ้มเซลล์ */
+  var mem='';
+  for(var y=-10;y<740;y+=21){
+    var wob=Math.sin(y/95)*30;
+    mem+='<circle cx="'+(128+wob)+'" cy="'+y+'" r="9" fill="#F2913C"/>'+
+         '<circle cx="'+(125+wob)+'" cy="'+(y-3)+'" r="3" fill="#FFCB8E" opacity=".85"/>'+
+         '<line x1="'+(128+wob)+'" y1="'+(y+9)+'" x2="'+(150+wob)+'" y2="'+(y+9)+'" '+
+           'stroke="#9B87D8" stroke-width="4" opacity=".65"/>'+
+         '<circle cx="'+(172+wob)+'" cy="'+y+'" r="9" fill="#5AA9E8"/>'+
+         '<circle cx="'+(169+wob)+'" cy="'+(y-3)+'" r="3" fill="#B4E0FF" opacity=".85"/>'+
+         '<line x1="'+(172+wob)+'" y1="'+(y+9)+'" x2="'+(150+wob)+'" y2="'+(y+9)+'" '+
+           'stroke="#9B87D8" stroke-width="4" opacity=".65"/>';
+  }
+  s+='<g opacity=".95">'+mem+'</g>';
+
+  /* GLUT channel */
+  s+='<g>'+
+     '<rect x="132" y="196" width="18" height="76" rx="9" fill="#8B6FD8" stroke="#C3AEFF" stroke-width="2.5"/>'+
+     '<rect x="168" y="196" width="18" height="76" rx="9" fill="#8B6FD8" stroke="#C3AEFF" stroke-width="2.5"/>'+
+     '<ellipse cx="159" cy="234" rx="16" ry="25" fill="#FFD86B" opacity=".35"/>'+
+     '</g>';
+
+  /* กลูโคสนอกเซลล์ */
+  [[56,196],[70,296],[34,116]].forEach(function(p,i){
+    s+='<g opacity="'+(i===0?1:.68)+'">'+hexCandy(p[0],p[1],i===0?28:19)+'</g>';
+  });
+  s+='<text x="60" y="250" fill="#FFE9A8" font-size="15" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">กลูโคส</text>';
+
+  /* เม็ดไกลโคเจน */
+  var gr='';
+  for(var i=0;i<13;i++){
+    var a=i*1.6, rr=i<7?18:31;
+    gr+='<circle cx="'+(300+Math.cos(a)*rr)+'" cy="'+(50+Math.sin(a)*rr*.7)+'" r="12" '+
+        'fill="#9B6FD8" stroke="#C9A8F5" stroke-width="1.5" opacity=".92"/>';
+  }
+  s+='<g>'+gr+'</g>';
+  s+='<rect x="360" y="34" width="96" height="30" rx="8" fill="#1B4696" stroke="#4C93E8" stroke-width="2"/>'+
+     '<text x="408" y="54" fill="#DDEBFF" font-size="13" font-weight="600" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">Glycogen</text>';
+
+  /* ห้องแล็บ PPP */
+  s+='<ellipse cx="'+PPP_LAB.x+'" cy="'+PPP_LAB.y+'" rx="140" ry="96" fill="url(#labG)" opacity=".5"/>';
+  [[968,168,24],[1024,158,30],[1082,170,22]].forEach(function(f){
+    s+='<path d="M'+(f[0]-9)+' '+(f[1]-f[2])+' L'+(f[0]-9)+' '+(f[1]-f[2]+14)+
+       ' L'+(f[0]-f[2]*.7)+' '+f[1]+' L'+(f[0]+f[2]*.7)+' '+f[1]+
+       ' L'+(f[0]+9)+' '+(f[1]-f[2]+14)+' L'+(f[0]+9)+' '+(f[1]-f[2])+' Z" '+
+       'fill="#7DD3FC" opacity=".55" stroke="#BAE6FD" stroke-width="2"/>';
+  });
+  s+='<text x="'+PPP_LAB.x+'" y="'+(PPP_LAB.y+74)+'" fill="#BAE6FD" font-size="14" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">Pentose Phosphate Pathway</text>';
+
+  /* ไมโทคอนเดรีย (Phase 2) */
+  s+='<g opacity=".7">'+
+     '<ellipse cx="'+MITO.x+'" cy="'+MITO.y+'" rx="248" ry="100" fill="url(#mitoG)" '+
+       'stroke="#F2A07A" stroke-width="5"/>'+
+     '<ellipse cx="'+MITO.x+'" cy="'+MITO.y+'" rx="228" ry="80" fill="none" '+
+       'stroke="#F7C3A3" stroke-width="3" opacity=".7"/>';
+  for(var c=-2;c<=2;c++){
+    var cx=MITO.x+c*82;
+    s+='<path d="M'+cx+' '+(MITO.y-64)+' q30 30 0 60 q-30 30 0 56" fill="none" '+
+       'stroke="#F2A07A" stroke-width="10" stroke-linecap="round" opacity=".72"/>';
+  }
+  s+='<rect x="'+(MITO.x-118)+'" y="'+(MITO.y-98)+'" width="236" height="32" rx="10" '+
+       'fill="#0A1B3D" opacity=".8" stroke="#F2A07A" stroke-width="2"/>'+
+     '<text x="'+MITO.x+'" y="'+(MITO.y-76)+'" fill="#FFD9C4" font-size="15" font-weight="700" '+
+     'font-family="Kanit,sans-serif" text-anchor="middle">🔒 ไมโทคอนเดรีย · TCA + ETC (Phase 2)</text>'+
+     '</g>';
+
+  /* เส้นทางหลัก */
+  var d='';
+  ORDER.forEach(function(id,i){ var m=MAP[id]; d+=(i===0?'M':'L')+m.x+' '+m.y+' '; });
+  s+='<path d="'+d+'" fill="none" stroke="#7DD3FC" stroke-width="9" stroke-linecap="round" '+
+     'stroke-linejoin="round" opacity=".28"/>';
+  s+='<path d="'+d+'" fill="none" stroke="#DFF3FF" stroke-width="3" stroke-linecap="round" '+
+     'stroke-linejoin="round" stroke-dasharray="2 16" opacity=".85"/>';
+
+  /* แขนงไปไกลโคเจน และ PPP */
+  s+='<path d="M'+MAP.junction.x+' '+MAP.junction.y+' Q356 168 '+MAP.glycogen.x+' '+MAP.glycogen.y+'" '+
+     'fill="none" stroke="#9BE15D" stroke-width="5" stroke-dasharray="9 9" opacity=".6"/>';
+  s+='<path d="M'+MAP.junction.x+' '+MAP.junction.y+' Q660 88 '+(PPP_LAB.x-118)+' '+PPP_LAB.y+'" '+
+     'fill="none" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="9 9" opacity=".5"/>';
+
+  /* ไพรูเวต → ไมโทคอนเดรีย */
+  s+='<path d="M'+MAP.pyruvate.x+' '+MAP.pyruvate.y+' Q560 626 '+(MITO.x-238)+' '+(MITO.y+4)+'" '+
+     'fill="none" stroke="#F2A07A" stroke-width="6" stroke-dasharray="12 8" opacity=".75"/>';
+
+  scene.innerHTML=s;
+}
+function PPPx(v){return v;}
+function hexCandy(cx,cy,r){
+  var pts=[];
+  for(var i=0;i<6;i++){var a=(60*i-30)*Math.PI/180;
+    pts.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}
+  return '<polygon points="'+pts.join(' ')+'" fill="url(#glucoseG)" stroke="#FFE9A8" stroke-width="'+(r/12)+'"/>'+
+    '<circle cx="'+(cx-r*.28)+'" cy="'+(cy-r*.1)+'" r="'+(r*.11)+'" fill="#7A4A00"/>'+
+    '<circle cx="'+(cx+r*.28)+'" cy="'+(cy-r*.1)+'" r="'+(r*.11)+'" fill="#7A4A00"/>'+
+    '<path d="M'+(cx-r*.22)+' '+(cy+r*.22)+' q'+(r*.22)+' '+(r*.2)+' '+(r*.44)+' 0" '+
+      'stroke="#7A4A00" stroke-width="'+(r/14)+'" fill="none" stroke-linecap="round"/>';
+}
+
+/* ---------------- โหนด + ตัวละคร (วาดทับฉาก) ---------------- */
+var nodeLayer, token;
+function buildNodes(){
+  nodeLayer=svgEl('g',{});
+  scene.appendChild(nodeLayer);
+
+  ALL.forEach(function(cp){
+    if(phaseOf(cp.id)!==displayPhase)return;
+    var m=posOf(cp.id); if(!m)return;
+    var g=svgEl('g',{'class':'hot','data-id':cp.id,'transform':'translate('+m.x+','+m.y+')'});
+    g.appendChild(svgEl('circle',{r:34,fill:'rgba(10,27,61,.55)','class':'halo',
+      stroke:cp.color,'stroke-width':3,opacity:.35}));
+    g.appendChild(svgEl('circle',{r:23,fill:'#1B4696',stroke:cp.color,'stroke-width':4}));
+    var num=svgEl('text',{y:7,'text-anchor':'middle','font-size':19,'font-weight':800,
+      fill:'#fff','font-family':'Kanit,sans-serif'});
+    num.textContent=m.n; g.appendChild(num);
+    var lw=Math.max(112,cp.label.length*8.4+26);
+    var lbBg=svgEl('rect',{x:-lw/2,y:32,width:lw,height:26,rx:9,fill:'#0A1B3D',opacity:.86,
+      stroke:cp.color,'stroke-width':2});
+    g.appendChild(lbBg);
+    var lb=svgEl('text',{y:50,'text-anchor':'middle','font-size':13,'font-weight':700,
+      fill:'#DDEBFF','font-family':'Kanit,sans-serif'});
+    lb.textContent=cp.label; g.appendChild(lb);
+    g.addEventListener('click',function(){tryEnter(cp.id);});
+    nodeLayer.appendChild(g);
+  });
+
+  token=svgEl('g',{'class':'token'});
+  token.innerHTML=hexCandy(0,0,20);
+  token.setAttribute('transform','translate(60,262)');
+  token.style.transition=reduced()?'none':'transform .75s cubic-bezier(.34,1.4,.5,1)';
+  scene.appendChild(token);
+}
+function moveToken(id){
+  var m=posOf(id); if(!m||!token||phaseOf(id)!==displayPhase)return;
+  token.setAttribute('transform','translate('+m.x+','+(m.y-46)+')');
+}
+function paintNodes(){
+  ALL.forEach(function(cp){
+    var g=nodeLayer?nodeLayer.querySelector('[data-id="'+cp.id+'"]'):null; if(!g)return;
+    var halo=g.querySelector('.halo');
+    var isNext=currentId()===cp.id;
+    var open=state.cleared[cp.id]||isNext||(cp.id==='glycogen'&&!!state.cleared.junction)||(cp.id==='uncoupler'&&!!state.cleared.complex4);
+    g.setAttribute('opacity',open?1:.45);
+    g.classList.toggle('locked',!open);
+    halo.setAttribute('opacity',isNext?.95:(state.cleared[cp.id]?.5:.25));
+    halo.setAttribute('stroke',state.cleared[cp.id]?'#4ADE80':(isNext?'#FFC53D':cp.color));
+    halo.setAttribute('r',isNext?38:34);
+  });
+}
+
+/* ---------------- state ---------------- */
+var state={
+  res:{atp:6,nadh:0,nadph:0,fadh2:0,o2:15,h:0,health:100},
+  cleared:{},attempts:{},answers:[],idx:0,
+  startedAt:now(),enteredAt:now(),finished:false,
+  score:0, combo:0, bestCombo:0, hintTokens:3, hintsUsed:0, timeouts:0
+};
+function currentId(){return FULL_ORDER[state.idx]||null;}
+function copyRes(){return JSON.parse(JSON.stringify(state.res));}
+
+/* ---------------- HUD ---------------- */
+var statDefs=[
+  {k:'atp',  cls:'atp',  ic:'⚡',    lb:'ATP'},
+  {k:'nadh', cls:'nadh', ic:'⬡',    lb:'NADH'},
+  {k:'nadph',cls:'nadph',ic:'NADPH',lb:'NADPH'},
+  {k:'fadh2',cls:'nadh', ic:'FAD',  lb:'FADH₂'},
+  {k:'o2',   cls:'o2',   ic:'O₂',   lb:'O₂', suf:'/15'},
+  {k:'h',     cls:'o2',   ic:'H⁺',   lb:'ความชัน H⁺', suf:'%'},
+  {k:'health',cls:'hp',  ic:'💚',   lb:'สุขภาพเซลล์', suf:'%'},
+  {k:'score', cls:'atp',  ic:'🏆',   lb:'คะแนน'},
+  {k:'combo', cls:'nadh', ic:'🔥',   lb:'คอมโบ', suf:'x'}
+];
+var statEls={};
+(function(){
+  var box=document.getElementById('stats');
+  statDefs.forEach(function(d){
+    var s=el('div','stat','<div class="orb '+d.cls+'">'+d.ic+'</div>'+
+      '<div><div class="lb">'+d.lb+'</div><div class="vl">0</div></div>');
+    statEls[d.k]=s.querySelector('.vl'); box.appendChild(s);
+  });
+})();
+function paintHUD(){
+  statDefs.forEach(function(d){
+    var v = (d.k==='score')?state.score : (d.k==='combo')?state.combo : state.res[d.k];
+    statEls[d.k].textContent=Math.round(v)+(d.suf||'');
+  });
+  var done=FULL_ORDER.filter(function(id){return state.cleared[id];}).length;
+  var pct=Math.round(done/FULL_ORDER.length*100);
+  document.getElementById('ribFill').style.width=pct+'%';
+  document.getElementById('ribPct').textContent=pct+'%';
+  document.getElementById('ringArc').setAttribute('stroke-dashoffset',195-195*pct/100);
+  document.getElementById('ringTxt').textContent=pct+'%';
+  var first=Object.keys(state.cleared).filter(function(id){return (state.attempts[id]||1)===1;}).length;
+  document.getElementById('misFill').style.width=(first/FULL_ORDER.length*100)+'%';
+  document.getElementById('misNum').textContent=first+' / '+FULL_ORDER.length;
+}
+
+/* ---------------- cards rail ---------------- */
+var cardEls={};
+function buildCards(){
+  var box=document.getElementById('cards');
+  box.innerHTML=''; cardEls={};
+  (displayPhase===2?CARDS2:CARDS).forEach(function(c){
+    var d=el('div','card'+(c.locked?' locked':''),
+      '<div class="no">'+c.n+'</div><div class="gl">'+c.gl+'</div>'+
+      '<div class="nm">'+c.nm+'</div><div class="sb">'+c.sb+'</div>'+
+      '<div class="ck">'+(c.locked?'🔒':'✓')+'</div>');
+    if(!c.locked)d.addEventListener('click',function(){tryEnter(c.id);});
+    cardEls[c.id]=d; box.appendChild(d);
+  });
+}
+function paintCards(){
+  (displayPhase===2?CARDS2:CARDS).forEach(function(c){
+    if(c.locked)return;
+    var d=cardEls[c.id];
+    d.classList.toggle('done',!!state.cleared[c.id]);
+    d.classList.toggle('active',currentId()===c.id);
+  });
+}
+
+/* ---------------- events out ---------------- */
+var logEl=document.getElementById('log'), confEl=document.getElementById('confusion');
+var EVENT_LOG=[]; // เก็บไว้ในหน่วยความจำเสมอ แม้หน้าผู้เล่นจะไม่มีแผงแสดงผล
+function emit(e){
+  EVENT_LOG.push(e);
+  if(logEl){
+    var t=new Date().toLocaleTimeString('th-TH');
+    var det=Object.keys(e).filter(function(k){
+      return k!=='type'&&k!=='at'&&k!=='summary'&&k!=='resources';})
+      .map(function(k){return k+'='+e[k];}).join(' ');
+    logEl.textContent='['+t+'] '+e.type+(det?'  '+det:'')+'\n'+logEl.textContent;
+  }
+  /* ---- จุดเชื่อมระบบเดิม ----
+     if(e.type==='question-answered')  savePassportAnswer(e);
+     if(e.type==='checkpoint-cleared') updateRoundProgress(e);
+     if(e.type==='phase-complete')     submitResultToDatabase(e.summary); */
+  if(e.type==='question-answered'||e.type==='phase-complete'||e.type==='checkpoint-cleared'){
+    renderConfusion();renderCompetency();
+    try{persistRecord();renderTeacherTable();}catch(err){console.warn(err);}
+  }
+}
+function renderConfusion(){
+  if(!confEl)return;
+  var s=getSummary();
+  if(!s.confusions.length){confEl.innerHTML='<span class="empty">ยังไม่พบจุดที่ตอบผิด</span>';return;}
+  confEl.innerHTML=s.confusions.map(function(c){
+    return '<div class="item"><span>'+c.label+'</span><span class="n">ตอบผิด '+c.wrong+' ครั้ง</span></div>';
+  }).join('');
+}
+
+/* ---------------- gameplay ---------------- */
+function setTip(h){document.getElementById('tipTx').innerHTML=h;}
+function setSub(h){document.getElementById('ribSub').textContent=h;}
+
+function tryEnter(id){
+  if(state.finished||!byId[id])return;
+  if(state.cleared[id]){setTip('<b>'+byId[id].title+'</b> — ผ่านด่านนี้แล้ว');return;}
+  if(id!==currentId()&&!(id==='glycogen'&&state.cleared.junction)&&!(id==='uncoupler'&&state.cleared.complex4)){
+    setTip('ยังไปจุดนั้นไม่ได้ — ต้องผ่าน <b>'+byId[currentId()].title+'</b> ก่อน');return;}
+  openQuestion(id);
+}
+
+var sheet=null;
+function reactionCardHTML(id){
+  var r=REACTION[id]; if(!r)return'';
+  var sp=STRUCT_PAIR[id]||{a:'none',b:'none'};
+  var extra = sp.b2 ? '<div class="mol-extra">+ '+structFor(sp.b2)+'</div>' : '';
+  return '<div class="rxn">'+
+    '<div class="rxn-row">'+
+      '<div class="rxn-box sub"><span class="rxn-lb">สารตั้งต้น</span>'+
+        structFor(sp.a)+'<div class="mol-name">'+r.sub+'</div></div>'+
+      '<div class="rxn-arrow"><span class="enz">'+r.enz+'</span><span class="arw">──▶</span>'+
+        '<span class="rt">'+r.rt+'</span></div>'+
+      '<div class="rxn-box prod"><span class="rxn-lb">ผลิตภัณฑ์</span>'+
+        structFor(sp.b)+extra+'<div class="mol-name">'+r.prod+'</div></div>'+
+    '</div>'+
+    '<div class="rxn-meta">'+
+      '<span>คาร์บอน <b>'+r.cb+' → '+r.ca+'</b></span>'+
+      '<span>โคแฟกเตอร์ <b>'+r.cof+'</b></span>'+
+      '<span>พลังงาน <b>'+r.en+'</b></span>'+
+    '</div></div>';
+}
+
+function openQuestion(id){
+  var cp=byId[id]; state.enteredAt=now();
+  emit({type:'checkpoint-enter',checkpoint:id,at:now()});
+  sheet=el('div','sheet');
+  var card=el('div','qcard');
+  card.appendChild(el('div','qeb','MISSION ENERGY · '+cp.title));
+  card.appendChild(el('div','qtimer','<span></span>'));
+  card.appendChild(el('div','',reactionCardHTML(id)));
+  card.appendChild(el('div','qsc',cp.question.scenario));
+  card.appendChild(el('div','qpr',cp.question.prompt));
+  var ow=el('div'); card.appendChild(ow);
+  var hintBar=el('div','hintbar');
+  card.appendChild(hintBar);
+  var fb=el('div'); card.appendChild(fb);
+  sheet.appendChild(card); document.getElementById('stage').appendChild(sheet);
+  state.attempts[id]=state.attempts[id]||0;
+
+  /* ---- §10.1 ตัวจับเวลา 25 วินาทีต่อข้อ ---- */
+  var LIMIT=25000, t0=now(), done=false, tbar=card.querySelector('.qtimer>span');
+  var tick=setInterval(function(){
+    var left=Math.max(0,LIMIT-(now()-t0));
+    tbar.style.width=(left/LIMIT*100)+'%';
+    tbar.style.background = left<8000 ? 'linear-gradient(90deg,#F0658A,#EF4444)'
+                                      : 'linear-gradient(90deg,#4ADE80,#7DD3FC)';
+    if(left<=0&&!done){
+      clearInterval(tick);
+      state.timeouts++; state.combo=0;
+      state.res.health=clamp(state.res.health-8,0,100);
+      state.score=Math.max(0,state.score-20);
+      paintHUD();
+      emit({type:'question-timeout',checkpoint:id,at:now()});
+      fb.innerHTML='';
+      fb.appendChild(el('div','fb warn','<span class="h">⏱ หมดเวลาสำหรับข้อนี้</span>'+
+        'สุขภาพเซลล์ลดลง 8% · คอมโบถูกตัด<span class="hint">💡 '+
+        (cp.question.options.filter(function(x){return !x.correct;})[0].hint||'ลองใหม่อีกครั้ง')+'</span>'));
+      var again=el('button','qbtn ghost','เริ่มจับเวลาใหม่');
+      again.addEventListener('click',function(){ if(sheet)sheet.remove(); sheet=null; openQuestion(id); });
+      fb.appendChild(again);
+    }
+  },200);
+  function stopTimer(){ done=true; clearInterval(tick); }
+
+  /* ---- §9.3 คำใบ้สองระดับ + Hint Token ---- */
+  var hintLevel=0;
+  function renderHintBar(){
+    hintBar.innerHTML='<button class="hintbtn" type="button">💡 ขอคำใบ้ (เหลือ '+
+      state.hintTokens+' · −15 คะแนน)</button>';
+    var hb=hintBar.querySelector('button');
+    if(state.hintTokens<=0||hintLevel>=2){hb.disabled=true;}
+    hb.addEventListener('click',function(){
+      if(state.hintTokens<=0||hintLevel>=2)return;
+      hintLevel++; state.hintTokens--; state.hintsUsed++;
+      state.score=Math.max(0,state.score-15); paintHUD();
+      emit({type:'hint-used',checkpoint:id,level:hintLevel,at:now()});
+      var r=REACTION[id]||{};
+      var h = hintLevel===1
+        ? 'จำนวนคาร์บอนเปลี่ยนจาก '+r.cb+' เป็น '+r.ca+' และปฏิกิริยานี้เป็นชนิด '+r.rt
+        : 'โคแฟกเตอร์ที่เกี่ยวข้องคือ '+r.cof+' · สมดุลพลังงานของขั้นนี้คือ '+r.en;
+      hintBar.insertAdjacentHTML('beforeend',
+        '<div class="fb warn" style="margin-top:8px"><span class="h">คำใบ้ระดับ '+hintLevel+'</span>'+h+'</div>');
+      renderHintBtnState();
+    });
+  }
+  function renderHintBtnState(){
+    var hb=hintBar.querySelector('button');
+    if(hb){hb.textContent='💡 ขอคำใบ้ (เหลือ '+state.hintTokens+' · −15 คะแนน)';
+      hb.disabled=(state.hintTokens<=0||hintLevel>=2);}
+  }
+  renderHintBar();
+
+  /* ---- สลับลำดับตัวเลือกทุกครั้ง ---- */
+  var shuffled=cp.question.options.slice();
+  for(var i=shuffled.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=shuffled[i]; shuffled[i]=shuffled[j]; shuffled[j]=t;
+  }
+  var LETTER=['ก','ข','ค','ง','จ'];
+
+  shuffled.forEach(function(o,oi){
+    var b=el('button','opt','<b style="color:#8FC5FF">'+LETTER[oi]+'.</b> '+o.text); b.type='button';
+    b.addEventListener('click',function(){
+      if(b.disabled||done)return;
+      state.attempts[id]++;
+      var att=state.attempts[id];
+      var ms=now()-t0;
+      emit({type:'question-answered',checkpoint:id,correct:!!o.correct,attempt:att,
+            tag:cp.question.tag,competency:CP_COMPETENCY[id],topic:cp.topic,
+            responseTimeMs:ms,hintUsed:hintLevel>0,at:now()});
+      state.answers.push({checkpoint:id,tag:cp.question.tag,topic:cp.topic,
+                          competency:CP_COMPETENCY[id],correct:!!o.correct,attempt:att,
+                          responseTimeMs:ms,hintUsed:hintLevel>0});
+      if(o.correct){
+        stopTimer();
+        b.classList.add('hit');
+        Array.prototype.forEach.call(ow.querySelectorAll('button'),function(x){x.disabled=true;});
+        /* ---- §10.2 คะแนน ---- */
+        var base = att===1?100:60;
+        var timeBonus = att===1 ? Math.round(50*Math.max(0,(LIMIT-ms))/LIMIT) : 0;
+        state.combo++; if(state.combo>state.bestCombo)state.bestCombo=state.combo;
+        var comboBonus = (state.combo>0 && state.combo%3===0) ? 50 : 0;
+        var cpBonus = (id==='accounting'||id==='total'||id==='pyruvate') ? 100 : 0;
+        var gained = base+timeBonus+comboBonus+cpBonus;
+        state.score += gained;
+        reward(cp); fb.innerHTML='';
+        fb.appendChild(el('div','fb good','<span class="h">✅ ถูกต้อง · +'+gained+' คะแนน</span>'+
+          (cp.question.onCorrect&&cp.question.onCorrect.note?cp.question.onCorrect.note:'')+
+          '<span class="hint">พื้นฐาน '+base+(timeBonus?' · โบนัสเวลา '+timeBonus:'')+
+          (comboBonus?' · คอมโบ '+comboBonus:'')+(cpBonus?' · ด่านสำคัญ '+cpBonus:'')+'</span>'));
+        var go=el('button','qbtn','เดินหน้าต่อ →');
+        go.addEventListener('click',function(){clearCP(id);}); fb.appendChild(go);
+        paintHUD();
+      }else{
+        b.classList.add('miss'); b.disabled=true;
+        state.combo=0;
+        state.res.health=clamp(state.res.health-5,0,100);   /* §10.3 ตอบผิด −5% */
+        state.score=Math.max(0,state.score-20);
+        paintHUD();
+        emit({type:'resource-change',resources:copyRes()});
+        fb.innerHTML='';
+        var extra='';
+        if(att>=2){
+          var r=REACTION[id]||{};
+          extra='<span class="hint">คำใบ้เชิงโครงสร้าง: ปฏิกิริยานี้เป็นชนิด <b>'+r.rt+
+                '</b> · คาร์บอน '+r.cb+' → '+r.ca+'</span>';
+        }
+        fb.appendChild(el('div','fb warn','<span class="h">⚠️ เกิดอะไรขึ้นในเซลล์ · −20 คะแนน</span>'+
+          (o.consequence||'เส้นทางสะดุด')+'<span class="hint">💡 '+
+          (o.hint||'ลองพิจารณาใหม่')+'</span>'+extra));
+        var rt2=el('button','qbtn ghost','ลองอีกครั้ง');
+        rt2.addEventListener('click',function(){fb.innerHTML='';}); fb.appendChild(rt2);
+      }
+    });
+    ow.appendChild(b);
+  });
+}
+
+function reward(cp){
+  var r=cp.question.onCorrect||{};
+  ['atp','nadh','nadph','fadh2','o2','h'].forEach(function(k){
+    if(r[k])state.res[k]=Math.max(0,state.res[k]+r[k]);});
+  if(cp.id==='pyruvate')state.res.o2=3;
+  if(cp.id==='anaerobic')state.res.o2=9;
+  state.res.health=clamp(state.res.health+4,0,100);
+  paintHUD(); emit({type:'resource-change',resources:copyRes()});
+  if(cp.question.branch)emit({type:'branch-taken',branch:cp.question.branch,at:now()});
+}
+
+function clearCP(id){
+  state.cleared[id]=true;
+  emit({type:'checkpoint-cleared',checkpoint:id,attempts:state.attempts[id]||1,
+        msSpent:now()-state.enteredAt,at:now()});
+  if(sheet){sheet.remove();sheet=null;}
+  if(id==='glycogen'||id==='uncoupler'){
+    moveToken(id);
+    setTip('<b>'+byId[id].title+'</b> — คลังสำรองพร้อมแล้ว กลับสู่เส้นทางหลักได้เลย');
+    setTimeout(function(){moveToken(currentId());},1500);
+    paintHUD();paintCards();paintNodes();return;
+  }
+  if(state.idx<FULL_ORDER.length-1){
+    state.idx++;
+    var nx=byId[currentId()];
+    if(phaseOf(currentId())!==displayPhase){
+      renderPhase(phaseOf(currentId()));
+      state.res.o2=15; state.res.health=clamp(state.res.health+10,0,100);
+      setTip('<b>เข้าสู่ Phase 2 · ไมโทคอนเดรีย</b> — ไพรูเวตข้ามเยื่อเข้าสู่เมทริกซ์แล้ว');
+      paintHUD(); paintCards(); paintNodes();
+      return;
+    }
+    moveToken(currentId());
+    setTip('<b>'+nx.title+'</b> — '+nx.caption);
+    setSub('ขั้นต่อไป: '+nx.title);
+    if(currentId()==='pfk1'&&!state.cleared.glycogen)
+      setTip('<b>'+nx.title+'</b> — '+nx.caption+' · แตะจุด <b>★ Glycogen</b> เพื่อสำรวจทางแยกเสริม');
+  }else finish();
+  paintHUD();paintCards();paintNodes();
+}
+
+function finish(){
+  state.finished=true;
+  var s=getSummary();
+  setSub('จบทั้งสองเฟส · กลูโคส → CO₂ + H₂O');
+  setTip('<b>จบ Phase 1:</b> ATP สุทธิ +2 · NADH 2 ในไซโทซอล · ไพรูเวต 2 โมเลกุลพร้อมเข้าไมโทคอนเดรียใน Phase 2');
+  sheet=el('div','sheet');
+  var card=el('div','qcard fin');
+  card.innerHTML='<h3>🎉 จบครบทั้งกระบวนการ</h3>'+
+    '<div class="qsc" style="text-align:start">กลูโคสเดินทางจากนอกเซลล์ ผ่าน GLUT เข้าไซโทซอล '+
+    'ผ่านไกลโคไลซิสครบ 10 ปฏิกิริยา เข้าสู่ไมโทคอนเดรียในรูปไพรูเวต '+
+    'ผ่าน PDH วัฏจักรเครบส์ และห่วงโซ่ขนส่งอิเล็กตรอน จนได้ ATP รวมประมาณ 30–32 โมเลกุล '+
+    'พร้อม CO₂ และ H₂O เป็นผลิตภัณฑ์สุดท้าย</div>'+
+    '<div class="note">ใช้เวลา '+Math.round(s.durationMs/1000)+' วินาที · ตอบถูกครั้งแรก '+
+    s.firstTryCorrect+'/'+s.checkpointsCleared+' ด่าน</div>';
+
+  if(fbDB && lastLeaderboardRows.length){
+    var ranked=lastLeaderboardRows;
+    var myIdx=ranked.findIndex(function(r){return r.student_id===SESSION.studentId;});
+    var winner=ranked[0];
+    var iAmWinner = winner && winner.student_id===SESSION.studentId;
+    var headline = iAmWinner
+      ? '🏆 ยินดีด้วย! คุณคืออันดับ 1 ของห้องนี้ตอนนี้'
+      : (winner ? '🏆 อันดับ 1 ตอนนี้คือ '+winner.full_name : '');
+    var rows=ranked.slice(0,5).map(function(r,i){
+      var mine = r.student_id===SESSION.studentId ? ' me' : '';
+      var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+      var mmss = (r.elapsed_s!=null) ? (Math.floor(r.elapsed_s/60)+':'+('0'+(r.elapsed_s%60)).slice(-2)) : '—';
+      return '<div class="lb-row'+mine+'"><span class="lb-rank">'+medal+'</span>'+
+        '<span class="lb-name">'+r.full_name+'<small>'+r.team_name+' · เวลา '+mmss+'</small></span>'+
+        '<span class="lb-score">'+r.score+'</span></div>';
+    }).join('');
+    var myRankNote = (myIdx>=0 && !iAmWinner)
+      ? '<div class="note">อันดับของคุณตอนนี้: อันดับ '+(myIdx+1)+' จาก '+ranked.length+' คนในห้อง</div>' : '';
+    card.innerHTML += '<h3 style="margin-top:16px;font-size:16px">'+headline+'</h3>'+
+      '<div style="margin-top:8px">'+rows+'</div>'+ myRankNote +
+      '<div class="note" style="margin-top:8px">ตัดสินจากคะแนนสูงสุดก่อน ถ้าคะแนนเท่ากันคนที่ใช้เวลาน้อยกว่าจะอยู่อันดับสูงกว่า · '+
+      'อันดับนี้เป็นข้อมูลสด ณ ขณะนี้ อาจเปลี่ยนได้ถ้ายังมีเพื่อนเล่นอยู่</div>';
+  }
+
+  var b=el('button','qbtn','ปิด');
+  b.addEventListener('click',function(){sheet.remove();sheet=null;});
+  card.appendChild(b);
+  sheet.appendChild(card); document.getElementById('stage').appendChild(sheet);
+  emit({type:'phase-complete',summary:s,at:now()});
+}
+
+function getSummary(){
+  var byTag={}, byComp={};
+  Object.keys(COMPETENCY).forEach(function(k){
+    byComp[k]={key:k,label:COMPETENCY[k],correct:0,total:0,first:0,firstTotal:0};
+  });
+  state.answers.forEach(function(a){
+    byTag[a.tag]=byTag[a.tag]||{tag:a.tag,label:TAG_LABEL[a.tag]||a.tag,correct:0,wrong:0};
+    if(a.correct)byTag[a.tag].correct++; else byTag[a.tag].wrong++;
+    var c=byComp[a.competency]; if(!c)return;
+    c.total++; if(a.correct)c.correct++;
+    if(a.attempt===1){c.firstTotal++; if(a.correct)c.first++;}
+  });
+  var comps=Object.keys(byComp).map(function(k){
+    var c=byComp[k];
+    c.pct = c.total? Math.round(100*c.correct/c.total) : null;
+    c.level = c.pct===null ? 'ยังไม่มีหลักฐาน'
+            : c.pct>=80 ? 'จุดแข็ง' : c.pct>=60 ? 'ควรทบทวน' : 'ต้องเสริม';
+    c.cls = c.pct===null?'n':c.pct>=80?'s':c.pct>=60?'m':'w';
+    return c;
+  });
+  var conf=Object.keys(byTag).map(function(k){return byTag[k];})
+    .filter(function(x){return x.wrong>0;}).sort(function(a,b){return b.wrong-a.wrong;});
+  var cl=Object.keys(state.cleared);
+  var firstTry=cl.filter(function(id){return (state.attempts[id]||1)===1;}).length;
+  var totalAns=state.answers.length;
+  return {
+    phase:displayPhase, durationMs:now()-state.startedAt,
+    checkpointsCleared:cl.length, completionPercent:Math.round(100*cl.length/FULL_ORDER.length),
+    firstTryCorrect:firstTry, totalAnswers:totalAns,
+    wrongAnswers:state.answers.filter(function(a){return !a.correct;}).length,
+    accuracy: totalAns? Math.round(100*state.answers.filter(function(a){return a.correct;}).length/totalAns):0,
+    firstAttemptAccuracy: cl.length? Math.round(100*firstTry/cl.length):0,
+    score:state.score, bestCombo:state.bestCombo,
+    hintsUsed:state.hintsUsed, timeouts:state.timeouts,
+    resources:copyRes(), byTag:byTag, confusions:conf,
+    competencies:comps,
+    strongTopics:comps.filter(function(c){return c.cls==='s';}).map(function(c){return c.label;}),
+    weakTopics:comps.filter(function(c){return c.cls==='w';}).map(function(c){return c.label;}),
+    answers:state.answers.slice()
+  };
+}
+
+/* ---- §12.4 แผงวิเคราะห์สมรรถนะ 7 ด้าน ---- */
+function renderCompetency(){
+  var box=document.getElementById('competency'); if(!box)return;
+  var s2=getSummary();
+  box.innerHTML=s2.competencies.map(function(c){
+    var w=c.pct===null?0:c.pct;
+    var col=c.cls==='s'?'#4ADE80':c.cls==='m'?'#FFC53D':c.cls==='w'?'#F0658A':'#3D5580';
+    return '<div class="comp-row"><div class="comp-lb"><span>'+c.label+'</span>'+
+      '<span class="lvl '+c.cls+'">'+(c.pct===null?'ยังไม่มีหลักฐาน':c.pct+'% · '+c.level)+'</span></div>'+
+      '<div class="comp-bar"><span style="width:'+w+'%;background:'+col+'"></span></div></div>';
+  }).join('');
+}
+
+/* ---- §12.5 Export CSV ---- */
+function exportCSV(){
+  var s2=getSummary();
+  var rows=[['checkpoint','competency','tag','attempt','correct','response_time_ms','hint_used']];
+  s2.answers.forEach(function(a){
+    rows.push([a.checkpoint,a.competency||'',a.tag,a.attempt,a.correct?1:0,
+               a.responseTimeMs||'',a.hintUsed?1:0]);
+  });
+  rows.push([]);
+  rows.push(['competency','percent','level']);
+  s2.competencies.forEach(function(c){rows.push([c.label,c.pct===null?'':c.pct,c.level]);});
+  rows.push([]);
+  rows.push(['score',s2.score],['accuracy',s2.accuracy],
+            ['first_attempt_accuracy',s2.firstAttemptAccuracy],
+            ['completion_percent',s2.completionPercent],
+            ['hints_used',s2.hintsUsed],['timeouts',s2.timeouts],
+            ['best_combo',s2.bestCombo],['total_time_s',Math.round(s2.durationMs/1000)]);
+  var csv='\ufeff'+rows.map(function(r){
+    return r.map(function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}).join(',');
+  }).join('\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='cell-candy-lab-result.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+/* ==========================================================================
+   ตั้งค่าการเชื่อมต่อ Google Sheets (ไม่บังคับ)
+   - ถ้า BACKEND_URL ว่าง: เกมทำงานปกติ บันทึกลงเครื่องอย่างเดียวเหมือนเดิม
+   - ถ้าใส่ URL: ทุกครั้งที่มีการบันทึกผล จะส่งสำเนาไปที่ Google Sheet ด้วย
+     (ยังคงบันทึกลงเครื่องเป็นสำรองเสมอ ไม่ว่าอินเทอร์เน็ตจะมีหรือไม่)
+   ดูวิธีตั้งค่า Google Sheet + Apps Script ได้จากไฟล์ Code.gs ที่แนบมาด้วย
+========================================================================== */
+var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyupT3LdGsCC_YZ8BZoqTdm8n3_DjAg4zRRH-8AqYz5HtCaKLPCngGPuONf2yjI_M0m9w/exec';
+var BACKEND_SECRET = 'BIO3CHS-2026';
+
+function pushToBackend(rec){
+  if(!BACKEND_URL) return;
+  try{
+    fetch(BACKEND_URL, {
+      method:'POST',
+      mode:'no-cors', // Apps Script ไม่ส่ง CORS header กลับมา จึงอ่านผลลัพธ์ไม่ได้ แต่ส่งสำเร็จแน่นอน
+      body: JSON.stringify(Object.assign({secret:BACKEND_SECRET}, rec))
+    }).catch(function(err){ console.warn('ส่งข้อมูลไป Google Sheet ไม่สำเร็จ (จะลองใหม่ครั้งถัดไป):', err); });
+  }catch(err){ console.warn('pushToBackend error:', err); }
+}
+
+/* ==========================================================================
+   ตั้งค่าการเชื่อมต่อ Firebase (ไม่บังคับ) — สำหรับกระดานคะแนนสด (Leaderboard)
+   - ถ้า FIREBASE_CONFIG เป็น null: ไม่มีการโหลด Firebase ใด ๆ เกมทำงานปกติ
+     และแผงกระดานคะแนนจะไม่แสดงเลย
+   - ถ้าใส่ config: โหลด Firebase SDK แบบ dynamic (โหลดเฉพาะตอนตั้งค่าไว้เท่านั้น)
+     แล้วอัปเดตคะแนนสด ๆ ให้ทุกคนในห้อง/รอบเดียวกันเห็นกัน
+   ดูวิธีตั้งค่า Firebase + Firestore rules ได้จากไฟล์ firestore.rules ที่แนบมาด้วย
+========================================================================== */
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDxutwVohS7am8qz4iA8NRr57B3vFcG3Fo",
+  authDomain: "glucose-journey.firebaseapp.com",
+  projectId: "glucose-journey",
+  storageBucket: "glucose-journey.firebasestorage.app",
+  messagingSenderId: "799625744968",
+  appId: "1:799625744968:web:a0049477e32deb14f7be7d"
+};
+/* ตัวอย่าง: FIREBASE_CONFIG = {
+     apiKey:"AIza...", authDomain:"xxx.firebaseapp.com", projectId:"xxx",
+     storageBucket:"xxx.appspot.com", messagingSenderId:"...", appId:"..."
+   }; */
+var FB_SDK_VERSION='10.14.0';
+var fbDB=null, fbUnsub=null;
+
+function loadScript_(src){
+  return new Promise(function(resolve,reject){
+    var s=document.createElement('script');
+    s.src=src; s.onload=resolve; s.onerror=reject;
+    document.head.appendChild(s);
+  });
+}
+function initFirebaseIfConfigured(){
+  if(!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey) return;
+  var base='https://www.gstatic.com/firebasejs/'+FB_SDK_VERSION+'/';
+  loadScript_(base+'firebase-app-compat.js')
+    .then(function(){ return loadScript_(base+'firebase-firestore-compat.js'); })
+    .then(function(){
+      window.firebase.initializeApp(FIREBASE_CONFIG);
+      fbDB=window.firebase.firestore();
+      document.getElementById('leaderboardPanel').classList.remove('hidden');
+      subscribeLeaderboard();
+    })
+    .catch(function(err){ console.warn('โหลด Firebase ไม่สำเร็จ (leaderboard จะไม่ทำงาน):',err); });
+}
+function fbDocId(){
+  return (SESSION.roomCode+'__'+SESSION.roundCode+'__'+SESSION.studentId)
+    .replace(/[^a-zA-Z0-9_-]/g,'_');
+}
+var lastLeaderboardRows=[];
+
+function computeRanked(rows){
+  // อันดับ 1 = คะแนนมากที่สุด ถ้าคะแนนเท่ากันให้ใช้เวลาที่ใช้น้อยกว่าเป็นตัวตัดสิน
+  return rows.slice().sort(function(a,b){
+    if(b.score!==a.score) return b.score-a.score;
+    var at=(a.elapsed_s==null)?Infinity:a.elapsed_s;
+    var bt=(b.elapsed_s==null)?Infinity:b.elapsed_s;
+    return at-bt;
+  });
+}
+
+function pushToLeaderboard(rec){
+  if(!fbDB) return;
+  try{
+    var cp=byId[currentId()];
+    fbDB.collection('leaderboard').doc(fbDocId()).set({
+      room_code:SESSION.roomCode, round_code:SESSION.roundCode,
+      student_id:SESSION.studentId, full_name:SESSION.name, team_name:SESSION.team,
+      score:rec.score, completion_percent:rec.completion_percent,
+      elapsed_s: Math.round((now()-state.startedAt)/1000),
+      current_checkpoint: cp ? cp.title : '',
+      finished: rec.finished, phase: displayPhase,
+      updated_at: window.firebase.firestore.FieldValue.serverTimestamp()
+    }, {merge:true}).catch(function(err){ console.warn('อัปเดต leaderboard ไม่สำเร็จ:',err); });
+  }catch(err){ console.warn('pushToLeaderboard error:',err); }
+}
+function subscribeLeaderboard(){
+  if(!fbDB) return;
+  if(fbUnsub) fbUnsub();
+  fbUnsub = fbDB.collection('leaderboard')
+    .where('room_code','==',SESSION.roomCode)
+    .where('round_code','==',SESSION.roundCode)
+    .orderBy('score','desc').limit(15)
+    .onSnapshot(function(snap){
+      var rows=computeRanked(snap.docs.map(function(d){return d.data();}));
+      lastLeaderboardRows=rows;
+      renderLeaderboard(rows);
+    }, function(err){
+      console.warn('leaderboard listener error — ถ้าเป็นครั้งแรก Firestore อาจขอให้สร้าง index, '+
+        'เปิด console ดูลิงก์แล้วกดสร้างครั้งเดียว:',err);
+    });
+}
+function renderLeaderboard(rows){
+  var box=document.getElementById('leaderboard'); if(!box)return;
+  if(!rows.length){ box.innerHTML='<span class="empty">ยังไม่มีใครอยู่ในห้องนี้</span>'; return; }
+  box.innerHTML=rows.map(function(r,i){
+    var mine = r.student_id===SESSION.studentId ? ' me' : '';
+    var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    return '<div class="lb-row'+mine+'"><span class="lb-rank">'+medal+'</span>'+
+      '<span class="lb-name">'+r.full_name+'<small>'+r.team_name+
+      (r.current_checkpoint?' · '+r.current_checkpoint:'')+'</small></span>'+
+      '<span class="lb-score">'+r.score+'</span></div>';
+  }).join('');
+}
+
+var SESSION={studentId:'65010001',name:'ทดสอบระบบ',team:'Group 1',
+             roomCode:'BIO-301',roundCode:'R-2026-A'};
+
+/* ============ §13 Data model · §12 ระบบหลังบ้านอาจารย์ (เก็บในเครื่อง) ============ */
+var STORE_KEY='ccl_records_v1';
+
+function loadRecords(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+function saveRecords(rows){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(rows)); return true; }
+  catch(e){ console.warn('บันทึกไม่สำเร็จ:',e); return false; }
+}
+
+/* บันทึกผลของผู้เล่นคนปัจจุบัน (upsert ตาม student_id + room + round) */
+function persistRecord(){
+  var p=SESSION, s2=getSummary();
+  var rows=loadRecords();
+  var key=p.studentId+'|'+p.roomCode+'|'+p.roundCode;
+  var rec={
+    key:key,
+    student_id:p.studentId, full_name:p.name, team_name:p.team,
+    room_code:p.roomCode, round_code:p.roundCode,
+    score:s2.score, accuracy:s2.accuracy,
+    first_attempt_accuracy:s2.firstAttemptAccuracy,
+    completion_percent:s2.completionPercent,
+    total_time_s:Math.round(s2.durationMs/1000),
+    total_hints:s2.hintsUsed, timeouts:s2.timeouts,
+    best_combo:s2.bestCombo, cell_health:s2.resources.health,
+    checkpoints_cleared:s2.checkpointsCleared,
+    competency_scores:s2.competencies.map(function(c){
+      return {key:c.key,label:c.label,pct:c.pct,level:c.level};}),
+    strong_topics:s2.strongTopics, weak_topics:s2.weakTopics,
+    attempts:s2.answers.map(function(a){
+      return {checkpoint:a.checkpoint,competency:a.competency,attempt:a.attempt,
+              is_correct:a.correct,response_time_ms:a.responseTimeMs,hint_used:a.hintUsed};}),
+    finished:state.finished,
+    updated_at:new Date().toISOString()
+  };
+  var i=rows.findIndex(function(r){return r.key===key;});
+  if(i>=0)rows[i]=rec; else rows.push(rec);
+  saveRecords(rows);
+  pushToBackend(rec);
+  pushToLeaderboard(rec);
+  return rec;
+}
+
+/* ---- §12.3 Live dashboard: ตารางผู้เล่นทั้งหมด ---- */
+function renderTeacherTable(){
+  var box=document.getElementById('records'); if(!box)return;
+  var rows=loadRecords();
+  if(!rows.length){
+    box.innerHTML='<span class="empty">ยังไม่มีข้อมูลนักศึกษา — ผลจะถูกบันทึกอัตโนมัติระหว่างเล่น</span>';
+    return;
+  }
+  rows.sort(function(a,b){return b.score-a.score;});
+  var h='<div class="tbl-wrap"><table class="tbl"><thead><tr>'+
+    '<th>#</th><th>รหัส</th><th>ชื่อ</th><th>ทีม</th><th>คะแนน</th><th>ความแม่นยำ</th>'+
+    '<th>ครั้งแรก</th><th>คืบหน้า</th><th>เวลา</th><th>คำใบ้</th><th>ต้องเสริม</th>'+
+    '</tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td>'+r.student_id+'</td><td>'+r.full_name+'</td>'+
+       '<td>'+r.team_name+'</td><td><b>'+r.score+'</b></td><td>'+r.accuracy+'%</td>'+
+       '<td>'+r.first_attempt_accuracy+'%</td><td>'+r.completion_percent+'%</td>'+
+       '<td>'+Math.floor(r.total_time_s/60)+':'+('0'+(r.total_time_s%60)).slice(-2)+'</td>'+
+       '<td>'+r.total_hints+'</td>'+
+       '<td class="weak">'+(r.weak_topics.length?r.weak_topics.join(', '):'—')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  box.innerHTML=h;
+}
+
+/* ---- §12.5 Export CSV ทุกคน ---- */
+function exportAllCSV(){
+  var rows=loadRecords();
+  if(!rows.length){alert('ยังไม่มีข้อมูลให้ส่งออก');return;}
+  var comps=Object.keys(COMPETENCY);
+  var head=['student_id','full_name','team_name','room_code','round_code','score','accuracy',
+    'first_attempt_accuracy','completion_percent','total_time_s','total_hints','timeouts',
+    'best_combo','cell_health','finished']
+    .concat(comps.map(function(k){return COMPETENCY[k];}))
+    .concat(['strong_topics','weak_topics','updated_at']);
+  var out=[head];
+  rows.forEach(function(r){
+    var line=[r.student_id,r.full_name,r.team_name,r.room_code,r.round_code,r.score,r.accuracy,
+      r.first_attempt_accuracy,r.completion_percent,r.total_time_s,r.total_hints,r.timeouts,
+      r.best_combo,r.cell_health,r.finished?'จบเกม':'ยังไม่จบ'];
+    comps.forEach(function(k){
+      var c=r.competency_scores.filter(function(x){return x.key===k;})[0];
+      line.push(c&&c.pct!=null?c.pct:'');
+    });
+    line.push(r.strong_topics.join(' / '),r.weak_topics.join(' / '),r.updated_at);
+    out.push(line);
+  });
+  downloadCSV(out,'cell-candy-lab-ทุกคน.csv');
+}
+function downloadCSV(rows,name){
+  var csv='\ufeff'+rows.map(function(r){
+    return r.map(function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}).join(',');
+  }).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+/* ---- §12.5 รายงานรายบุคคล (พิมพ์ A4 แนวนอน / บันทึกเป็น PDF) ---- */
+function printReport(){
+  var rows=loadRecords();
+  if(!rows.length){alert('ยังไม่มีข้อมูลให้พิมพ์');return;}
+  rows.sort(function(a,b){return b.score-a.score;});
+  var body=rows.map(function(r,i){
+    var cs=r.competency_scores.map(function(c){
+      var col=c.pct==null?'#888':c.pct>=80?'#1B7A45':c.pct>=60?'#B8730A':'#B3243F';
+      return '<tr><td>'+c.label+'</td><td style="text-align:right">'+
+        (c.pct==null?'—':c.pct+'%')+'</td><td style="color:'+col+';font-weight:700">'+c.level+'</td></tr>';
+    }).join('');
+    return '<section><h2>'+(i+1)+'. '+r.full_name+' <small>('+r.student_id+' · '+r.team_name+')</small></h2>'+
+      '<p class="meta">ห้อง '+r.room_code+' · รอบ '+r.round_code+' · คะแนน <b>'+r.score+'</b>'+
+      ' · ความแม่นยำ '+r.accuracy+'% · ตอบถูกครั้งแรก '+r.first_attempt_accuracy+'%'+
+      ' · ความคืบหน้า '+r.completion_percent+'% · เวลา '+Math.floor(r.total_time_s/60)+' นาที'+
+      ' · คำใบ้ '+r.total_hints+' ครั้ง · สถานะ '+(r.finished?'จบเกม':'ยังไม่จบ')+'</p>'+
+      '<table><thead><tr><th>สมรรถนะ</th><th>คะแนน</th><th>ระดับ</th></tr></thead><tbody>'+cs+'</tbody></table>'+
+      '<p class="meta"><b>จุดแข็ง:</b> '+(r.strong_topics.join(', ')||'—')+
+      '<br><b>หัวข้อที่ต้องเสริม:</b> '+(r.weak_topics.join(', ')||'—')+'</p></section>';
+  }).join('');
+  var win=window.open('','_blank');
+  if(!win){alert('เบราว์เซอร์บล็อกหน้าต่างใหม่ กรุณาอนุญาต pop-up');return;}
+  win.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">'+
+    '<title>รายงานผลการเรียนรู้ · Cell Candy Lab</title>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">'+
+    '<style>@page{size:A4 landscape;margin:12mm}'+
+    'body{font-family:Kanit,sans-serif;color:#111;font-size:12px;margin:0;padding:10px}'+
+    'h1{font-size:19px;margin:0 0 4px}'+
+    'section{page-break-inside:avoid;border:1px solid #ccc;border-radius:8px;padding:10px 12px;margin-bottom:10px}'+
+    'h2{font-size:14px;margin:0 0 4px}h2 small{font-weight:400;color:#555;font-size:11px}'+
+    '.meta{margin:4px 0;color:#333;line-height:1.6}'+
+    'table{border-collapse:collapse;width:60%;margin:6px 0}'+
+    'th,td{border:1px solid #ddd;padding:3px 7px;font-size:11px}'+
+    'th{background:#f2f5f9;text-align:left}</style></head><body>'+
+    '<h1>รายงานผลการเรียนรู้ · Cell Candy Lab: Glucose Journey</h1>'+
+    '<p class="meta">ออกรายงานเมื่อ '+new Date().toLocaleString('th-TH')+' · จำนวน '+rows.length+' คน</p>'+
+    body+'</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+
+function clearRecords(){
+  if(!confirm('ลบข้อมูลนักศึกษาทั้งหมดในเครื่องนี้?'))return;
+  saveRecords([]); renderTeacherTable();
+}
+
+document.getElementById('misGo').addEventListener('click',function(){
+  if(state.finished){setTip('<b>จบ Phase 1 แล้ว</b> — กด ↻ เริ่มใหม่ เพื่อเล่นอีกครั้ง');return;}
+  tryEnter(currentId());
+});
+document.getElementById('tReset').addEventListener('click',function(){location.reload();});
+document.getElementById('tHelp').addEventListener('click',function(){
+  if(sheet)return;
+  sheet=el('div','sheet');
+  var card=el('div','qcard');
+  card.innerHTML='<div class="qeb">วิธีเล่น</div>'+
+    '<div class="qsc" style="text-align:start">'+
+    '🎯 พากลูโคสเดินทางจากนอกเซลล์ ผ่าน GLUT เข้าไซโทซอล จนจบเป็นไพรูเวต<br><br>'+
+    '⚡ <b>Mission Energy:</b> ตอบสถานการณ์ให้ถูกจึงจะเดินไป checkpoint ถัดไปได้<br><br>'+
+    '⚠️ ตอบผิดจะ<b>ไม่เฉลยทันที</b> แต่จะแสดงผลกระทบที่เกิดในเซลล์พร้อมคำใบ้ แล้วให้ตอบแก้ตัว<br><br>'+
+    '★ <b>Glycogen</b> เป็นทางแยกเสริม เล่นได้หลังผ่านทางแยก G6P<br><br>'+
+    '🔒 TCA และ ETC ในไมโทคอนเดรียจะเปิดใน Phase 2</div>';
+  var b=el('button','qbtn','เข้าใจแล้ว');
+  b.addEventListener('click',function(){sheet.remove();sheet=null;});
+  card.appendChild(b); sheet.appendChild(card);
+  document.getElementById('stage').appendChild(sheet);
+});
+['inpRoom','inpRound','inpId','inpName','inpTeam'].forEach(function(idf){
+  var e=document.getElementById(idf); if(!e)return;
+  e.addEventListener('change',function(){
+    SESSION.roomCode=document.getElementById('inpRoom').value.trim()||'ไม่ระบุห้อง';
+    SESSION.roundCode=document.getElementById('inpRound').value.trim()||'ไม่ระบุรอบ';
+    SESSION.studentId=document.getElementById('inpId').value.trim()||'ไม่ระบุ';
+    SESSION.name=document.getElementById('inpName').value.trim()||'ไม่ระบุ';
+    SESSION.team=document.getElementById('inpTeam').value.trim()||'-';
+    try{persistRecord();}catch(err){}
+    if(fbDB){ try{ subscribeLeaderboard(); }catch(err){} } // เปลี่ยนห้อง/รอบ → ดึงกระดานคะแนนของห้องนั้นใหม่
+  });
+});
+
+/* ตั้งค่าเริ่มต้นจากช่องกรอกทันทีตอนโหลดหน้า เผื่อผู้เล่นแก้ก่อนกดเริ่ม */
+SESSION.roomCode=document.getElementById('inpRoom').value.trim()||SESSION.roomCode;
+SESSION.roundCode=document.getElementById('inpRound').value.trim()||SESSION.roundCode;
+
+/* ---- ผู้เล่นดูผลของตัวเองได้ แต่เข้าถึงข้อมูลของคนอื่นหรือแผงอาจารย์ไม่ได้ ---- */
+var btnMyResult=document.getElementById('btnExport');
+if(btnMyResult){
+  btnMyResult.addEventListener('click',function(){
+    var s=getSummary();
+    if(sheet)return;
+    sheet=el('div','sheet');
+    var card=el('div','qcard');
+    var comp=s.competencies.map(function(c){
+      return '<div class="comp-row"><div class="comp-lb"><span>'+c.label+'</span>'+
+        '<span class="lvl '+c.cls+'">'+(c.pct===null?'ยังไม่มีหลักฐาน':c.pct+'% · '+c.level)+'</span></div>'+
+        '<div class="comp-bar"><span style="width:'+(c.pct||0)+'%;background:'+
+        (c.cls==='s'?'#4ADE80':c.cls==='m'?'#FFC53D':c.cls==='w'?'#F0658A':'#3D5580')+'"></span></div></div>';
+    }).join('');
+    card.innerHTML='<div class="qeb">ผลของฉัน</div>'+
+      '<div class="qsc" style="text-align:start">คะแนน <b>'+s.score+'</b> · ความแม่นยำ '+s.accuracy+
+      '% · ตอบถูกครั้งแรก '+s.firstAttemptAccuracy+'% · ความคืบหน้า '+s.completionPercent+
+      '% · คำใบ้ที่ใช้ '+s.hintsUsed+' ครั้ง · คอมโบสูงสุด '+s.bestCombo+'x</div>'+comp;
+    var b=el('button','qbtn','ปิด');
+    b.addEventListener('click',function(){sheet.remove();sheet=null;});
+    card.appendChild(b); sheet.appendChild(card);
+    document.getElementById('stage').appendChild(sheet);
+  });
+}
+
+/* ---------------- start ---------------- */
+function renderPhase(ph){
+  displayPhase=ph;
+  if(ph===2)buildScene2(); else buildScene1();
+  buildNodes(); buildCards();
+  paintNodes(); paintCards();
+  moveToken(currentId());
+  document.getElementById('tabP1').classList.toggle('on',ph===1);
+  document.getElementById('tabP2').classList.toggle('on',ph===2);
+  document.getElementById('ribSub').textContent = ph===2
+    ? 'Phase 2 · ไมโทคอนเดรีย (TCA + ETC)' : 'Phase 1 · ไกลโคไลซิสในไซโทซอล';
+}
+document.getElementById('tabP1').addEventListener('click',function(){renderPhase(1);});
+document.getElementById('tabP2').addEventListener('click',function(){
+  if(!state.cleared.accounting){setTip('ต้องผ่าน <b>Phase 1</b> ให้ครบก่อน จึงจะเข้าไมโทคอนเดรียได้');return;}
+  renderPhase(2);
+});
+renderPhase(1);
+paintHUD();
+setTimeout(function(){moveToken('glut');},350);
+setSub('ขั้นต่อไป: '+byId.glut.title);
+emit({type:'phase-start',phase:1,at:now()});
+initFirebaseIfConfigured();
+})();
+</script>
+</body>
+</html>

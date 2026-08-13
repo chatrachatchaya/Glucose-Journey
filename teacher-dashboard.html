@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<!-- © 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved. -->
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Chatrachatchaya Ch., Ph.D., RMUTI">
+<meta name="copyright" content="© 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved.">
+<title>ระบบหลังบ้านอาจารย์ · Cell Candy Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#123166; --edge:#5AA9E8; --edge2:#9CC6EE; --gold:#F0A11E;
+  --green:#16A34A; --red:#DC2626; --dim:#5B7BA8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:14px;font-family:Kanit,system-ui,sans-serif;color:var(--navy);
+  background:radial-gradient(120% 90% at 50% -10%,#FFFFFF 0%,#DCEBFF 40%,#BBD7F5 100%);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+.pnl{
+  position:relative;border-radius:18px;background:linear-gradient(180deg,#FFFFFF,#E4EFFC);
+  border:2px solid var(--edge2);box-shadow:0 5px 0 #B4CFEA,0 12px 26px rgba(30,70,130,.18),inset 0 2px 0 #FFF;
+  padding:16px;margin-bottom:14px;
+}
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:15px;margin:0 0 10px;color:#0E4C86}
+.sub{font-size:12.5px;color:var(--dim);margin:0 0 14px}
+.badge{display:inline-block;font-size:11px;font-weight:700;background:#FDEFD0;color:#8A5A06;
+  padding:4px 11px;border-radius:999px;margin-left:8px}
+
+/* ---- gate ---- */
+#gate{max-width:420px;margin:12vh auto 0;text-align:center}
+#gate .lock{font-size:40px;margin-bottom:6px}
+#gate input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--edge2);
+  font-family:inherit;font-size:15px;text-align:center;margin:12px 0;box-sizing:border-box}
+#gate input:focus{outline:2px solid var(--edge);outline-offset:1px}
+#gate button{width:100%;padding:12px;border-radius:12px;border:2px solid #1B7A45;cursor:pointer;
+  background:linear-gradient(180deg,#5FE3A6,#33B58A);color:#052018;font-family:inherit;font-size:15px;
+  font-weight:800;box-shadow:0 4px 0 #14663A}
+#gate button:active{transform:translateY(3px);box-shadow:0 1px 0 #14663A}
+#gate .warn{font-size:11.5px;color:var(--dim);margin-top:12px;line-height:1.6}
+#gate .err{color:#DC2626;font-size:12.5px;font-weight:700;min-height:18px;margin-top:2px}
+
+/* ---- toolbar ---- */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.exp{padding:9px 14px;border-radius:11px;border:2px solid #9CC6EE;color:#1B5E96;
+  background:linear-gradient(180deg,#FFFFFF,#DCE9FB);font-family:inherit;font-size:12.5px;
+  font-weight:700;cursor:pointer;box-shadow:0 3px 0 #B4CFEA}
+.exp:active{transform:translateY(2px);box-shadow:0 1px 0 #B4CFEA}
+.exp.danger{color:#B3243F;border-color:#F0A8B8}
+.filter{padding:9px 12px;border-radius:11px;border:2px solid var(--edge2);font-family:inherit;
+  font-size:12.5px;background:#fff}
+.spacer{flex:1}
+
+/* ---- table ---- */
+.tbl-wrap{overflow-x:auto;border:1px solid #C9DCF2;border-radius:10px}
+.tbl{border-collapse:collapse;width:100%;font-size:12px;background:#fff;min-width:820px}
+.tbl th,.tbl td{border-bottom:1px solid #E4EDF8;padding:7px 10px;text-align:left;white-space:nowrap}
+.tbl th{background:#EAF3FF;color:#1B5E96;font-weight:700;cursor:pointer;user-select:none}
+.tbl th:hover{background:#DCEBFF}
+.tbl tbody tr:nth-child(even){background:#F7FBFF}
+.tbl tbody tr:hover{background:#EAF3FF}
+.tbl td.weak{color:#8C1229;white-space:normal;min-width:190px;font-size:11.3px}
+.empty{color:#7E93B2;font-size:12.5px}
+
+/* ---- competency summary ---- */
+.comp-row{margin-bottom:12px}
+.comp-lb{display:flex;justify-content:space-between;gap:8px;font-size:12.8px;margin-bottom:4px}
+.comp-bar{height:11px;border-radius:6px;background:#D6E6F7;border:1px solid #9CC6EE;overflow:hidden}
+.comp-bar>span{display:block;height:100%;border-radius:5px}
+.lvl{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.lvl.s{background:#D6F5E2;color:#0B5A31}
+.lvl.m{background:#FDEFD0;color:#8A5A06}
+.lvl.w{background:#FCDDE4;color:#8C1229}
+.lvl.n{background:#E4EDF8;color:#5B7BA8}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+.kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.kpi{flex:1 1 130px;background:#F4F9FF;border:1.5px solid #C9DCF2;border-radius:12px;padding:10px 12px}
+.kpi b{display:block;font-size:20px;color:#0E4C86}
+.kpi span{font-size:11px;color:var(--dim)}
+.hidden{display:none!important}
+
+/* ---- detail drawer ---- */
+.drawer{position:fixed;inset:0;background:rgba(20,50,95,.42);backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;padding:14px;z-index:20}
+.drawer .card{max-width:640px;width:100%;max-height:88vh;overflow-y:auto;border-radius:20px;
+  padding:20px;background:linear-gradient(180deg,#FFFFFF,#E4EFFC);border:3px solid var(--edge2);
+  box-shadow:0 22px 44px rgba(20,50,95,.35)}
+.drawer h3{margin:0 0 4px;font-size:18px}
+.drawer .meta{font-size:12.5px;color:var(--dim);margin-bottom:14px;line-height:1.7}
+.drawer table{border-collapse:collapse;width:100%;font-size:12px;margin:8px 0}
+.drawer th,.drawer td{border-bottom:1px solid #E4EDF8;padding:6px 8px;text-align:left}
+.drawer th{background:#EAF3FF}
+.closeBtn{margin-top:14px;width:100%;padding:11px;border-radius:12px;border:2px solid #9CC6EE;
+  background:#fff;color:#1B5E96;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== GATE ===== -->
+  <div id="gate">
+    <div class="pnl">
+      <div class="lock">🔒</div>
+      <h1>ระบบหลังบ้านอาจารย์</h1>
+      <p class="sub">Cell Candy Lab: Glucose Journey — สำหรับอาจารย์ผู้สอนเท่านั้น</p>
+      <input id="keyInput" type="password" placeholder="กรอกรหัสผ่านอาจารย์" autocomplete="off">
+      <div class="err" id="gateErr"></div>
+      <button id="btnUnlock">เข้าสู่ระบบ</button>
+      <p class="warn">⚠️ หน้านี้ตรวจสอบรหัสผ่าน<b>ฝั่งเบราว์เซอร์เท่านั้น</b> เหมาะสำหรับกันไม่ให้นักศึกษาเปิดพบโดยบังเอิญ
+        แต่ไม่ใช่การรักษาความปลอดภัยระดับเซิร์ฟเวอร์ หากต้องการความปลอดภัยจริงจัง (ป้องกันคนที่ตั้งใจเข้าถึง)
+        ต้องมีระบบยืนยันตัวตนฝั่งเซิร์ฟเวอร์ตามข้อกำหนดเดิม</p>
+      <p style="text-align:center;font-size:11px;color:var(--dim);margin-top:16px">
+        © 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved.
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="dash" class="hidden">
+    <div class="pnl">
+      <h1>ระบบหลังบ้านอาจารย์ <span class="badge">Cell Candy Lab · Teacher only</span></h1>
+      <p class="sub">ข้อมูลนี้อ่านจากเบราว์เซอร์เครื่องนี้เท่านั้น — ดูหมายเหตุด้านล่างเรื่องการรวมข้อมูลจากหลายเครื่อง</p>
+      <div class="kpis" id="kpis"></div>
+    </div>
+
+    <div class="pnl">
+      <h2>ผลรายบุคคล</h2>
+      <div class="toolbar">
+        <input class="filter" id="filterRoom" placeholder="กรองตามรหัสห้อง">
+        <input class="filter" id="filterRound" placeholder="กรองตามรหัสรอบ">
+        <input class="filter" id="filterText" placeholder="ค้นหาชื่อ / รหัสนักศึกษา / ทีม" style="min-width:220px">
+        <span class="spacer"></span>
+        <button class="exp" id="btnCsvAll">📊 Export CSV (ทุกคน)</button>
+        <button class="exp" id="btnPdf">🖨 รายงาน PDF / พิมพ์ A4</button>
+        <button class="exp danger" id="btnClear">🗑 ล้างข้อมูลทั้งหมด</button>
+      </div>
+      <div id="records"></div>
+    </div>
+
+    <div class="pnl hidden" id="liveRoomPanel">
+      <h2>🟢 ห้องเรียนสด (Firebase)</h2>
+      <div class="toolbar">
+        <input class="filter" id="liveRoomFilter" placeholder="กรองตามรหัสห้อง (เว้นว่าง = ทุกห้อง)">
+      </div>
+      <div id="liveRoom"><span class="empty">กำลังเชื่อมต่อ...</span></div>
+    </div>
+
+    <div class="grid2">
+      <div class="pnl">
+        <h2>สมรรถนะ 7 ด้าน · ภาพรวมทั้งห้อง</h2>
+        <div id="competency"></div>
+      </div>
+      <div class="pnl">
+        <h2>ด่านที่นักศึกษาสับสนมากที่สุด</h2>
+        <div id="confusion"></div>
+      </div>
+    </div>
+
+    <div class="pnl">
+      <p class="sub" style="margin:0">
+        <b>หมายเหตุการใช้งาน:</b> ตาราง "ผลรายบุคคล" ด้านบนอ่านจาก <code>localStorage</code> ของเบราว์เซอร์เครื่องนี้
+        และจาก Google Sheet ที่เชื่อมไว้ (ถ้าตั้งค่า Apps Script แล้ว) ส่วนแผง "ห้องเรียนสด" อ่านจาก Firebase
+        แบบเรียลไทม์ (ถ้าตั้งค่า FIREBASE_CONFIG แล้ว) — ทั้งสองแหล่งข้อมูลนี้เป็นคนละที่กัน
+        ให้ใช้ Google Sheet สำหรับดูผลย้อนหลัง/ประเมินทักษะ และใช้ห้องเรียนสดสำหรับติดตามระหว่างเล่นเท่านั้น
+      </p>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:var(--dim);margin:18px 0 4px">
+      © 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved.
+    </p>
+  </div>
+
+</div>
+
+<div id="drawerRoot"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ต้องตรงกับ STORE_KEY ในไฟล์เกม (glucose-journey.html) */
+var STORE_KEY='ccl_records_v1';
+/* เปลี่ยนรหัสผ่านตรงนี้ก่อนเผยแพร่จริง */
+var TEACHER_KEY='teacher2026';
+
+/* ==========================================================================
+   ห้องเรียนสด (ไม่บังคับ) — ต้องตั้งค่าให้ตรงกับ FIREBASE_CONFIG ในไฟล์เกม
+   ถ้าปล่อยเป็น null: แผงนี้จะไม่แสดง ใช้แค่ตาราง Google Sheets ด้านบนพอ
+========================================================================== */
+var FIREBASE_CONFIG = null;
+var FB_SDK_VERSION='10.14.0';
+var fbDB=null, fbUnsub=null;
+
+var COMPETENCY = {
+  substrate_product:'การจำแนกสารตั้งต้นและผลิตภัณฑ์',
+  functional_group:'การเปลี่ยนแปลงหมู่ฟังก์ชัน',
+  carbon_tracking:'การติดตามจำนวนคาร์บอน',
+  phosphate_position:'การเปลี่ยนตำแหน่งหมู่ฟอสเฟต',
+  energy_accounting:'ATP และ coenzyme accounting',
+  cellular_location:'ตำแหน่งที่เกิดปฏิกิริยาในเซลล์',
+  regulation_pathway:'การควบคุมและการเลือกเส้นทาง'
+};
+var TAG_LABEL = {
+  'transport':'การขนส่งกลูโคสเข้าเซลล์',
+  'glycolysis-location':'ตำแหน่งที่เกิดไกลโคไลซิส',
+  'reaction-logic':'เหตุผลของแต่ละปฏิกิริยา',
+  'mito-import':'สารที่เข้าไมโทคอนเดรีย',
+  'nadh-vs-nadph':'หน้าที่ของ NADH เทียบกับ NADPH',
+  'regulation':'การควบคุมวิถี (regulation)',
+  'atp-accounting':'การคิดบัญชี ATP',
+  'compartment':'ตำแหน่งภายในไมโทคอนเดรีย'
+};
+
+function el(t,c,h){var d=document.createElement(t);if(c)d.className=c;if(h!=null)d.innerHTML=h;return d;}
+
+/* ---------------- storage ---------------- */
+function loadScript_(src){
+  return new Promise(function(resolve,reject){
+    var s=document.createElement('script');
+    s.src=src; s.onload=resolve; s.onerror=reject;
+    document.head.appendChild(s);
+  });
+}
+function initLiveRoom(){
+  var panel=document.getElementById('liveRoomPanel');
+  if(!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey){ if(panel)panel.classList.add('hidden'); return; }
+  var base='https://www.gstatic.com/firebasejs/'+FB_SDK_VERSION+'/';
+  loadScript_(base+'firebase-app-compat.js')
+    .then(function(){ return loadScript_(base+'firebase-firestore-compat.js'); })
+    .then(function(){
+      window.firebase.initializeApp(FIREBASE_CONFIG);
+      fbDB=window.firebase.firestore();
+      panel.classList.remove('hidden');
+      subscribeLiveRoom();
+    })
+    .catch(function(err){ console.warn('โหลด Firebase ไม่สำเร็จ (ห้องเรียนสดจะไม่ทำงาน):',err); });
+}
+function subscribeLiveRoom(){
+  if(!fbDB)return;
+  if(fbUnsub)fbUnsub();
+  var room=document.getElementById('liveRoomFilter').value.trim();
+  var q=fbDB.collection('leaderboard');
+  if(room) q=q.where('room_code','==',room);
+  fbUnsub=q.orderBy('score','desc').limit(60).onSnapshot(function(snap){
+    renderLiveRoom(snap.docs.map(function(d){return d.data();}));
+  },function(err){
+    console.warn('live room listener error (อาจต้องสร้าง Firestore index ครั้งแรก ดู console):',err);
+  });
+}
+function renderLiveRoom(rows){
+  var box=document.getElementById('liveRoom');
+  if(!rows.length){ box.innerHTML='<span class="empty">ยังไม่มีใครออนไลน์อยู่</span>'; return; }
+  var h='<div class="tbl-wrap"><table class="tbl"><thead><tr>'+
+    '<th>#</th><th>ชื่อ</th><th>ทีม</th><th>ห้อง/รอบ</th><th>คะแนน</th><th>ตำแหน่งล่าสุด</th><th>สถานะ</th>'+
+    '</tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td>'+r.full_name+'</td><td>'+r.team_name+'</td>'+
+       '<td>'+r.room_code+' / '+r.round_code+'</td><td><b>'+r.score+'</b></td>'+
+       '<td>'+(r.current_checkpoint||'—')+'</td><td>'+(r.finished?'✅ จบเกม':'🟢 กำลังเล่น')+'</td></tr>';
+  });
+  box.innerHTML=h+'</tbody></table></div>';
+}
+
+function loadRecords(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+function saveRecords(rows){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(rows)); return true; }
+  catch(e){ console.warn('บันทึกไม่สำเร็จ:',e); return false; }
+}
+
+/* ---------------- gate ---------------- */
+var SESSION_UNLOCK_KEY='ccl_teacher_unlocked';
+function tryUnlock(){
+  var v=document.getElementById('keyInput').value;
+  if(v===TEACHER_KEY){
+    sessionStorage.setItem(SESSION_UNLOCK_KEY,'1');
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('dash').classList.remove('hidden');
+    renderAll();
+    initLiveRoom();
+  }else{
+    document.getElementById('gateErr').textContent='รหัสผ่านไม่ถูกต้อง';
+  }
+}
+document.getElementById('btnUnlock').addEventListener('click',tryUnlock);
+document.getElementById('keyInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter')tryUnlock();
+});
+if(sessionStorage.getItem(SESSION_UNLOCK_KEY)==='1'){
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('dash').classList.remove('hidden');
+  renderAll();
+  initLiveRoom();
+}
+
+/* ---------------- filtering ---------------- */
+function filteredRows(){
+  var rows=loadRecords();
+  var room=document.getElementById('filterRoom').value.trim().toLowerCase();
+  var round=document.getElementById('filterRound').value.trim().toLowerCase();
+  var text=document.getElementById('filterText').value.trim().toLowerCase();
+  return rows.filter(function(r){
+    if(room && (r.room_code||'').toLowerCase().indexOf(room)<0) return false;
+    if(round && (r.round_code||'').toLowerCase().indexOf(round)<0) return false;
+    if(text){
+      var hay=(r.student_id+' '+r.full_name+' '+r.team_name).toLowerCase();
+      if(hay.indexOf(text)<0) return false;
+    }
+    return true;
+  }).sort(function(a,b){return b.score-a.score;});
+}
+
+/* ---------------- KPI summary ---------------- */
+function renderKPIs(){
+  var box=document.getElementById('kpis');
+  var rows=filteredRows();
+  if(!rows.length){ box.innerHTML='<span class="empty">ยังไม่มีข้อมูลนักศึกษาในเครื่องนี้</span>'; return; }
+  var avgScore=Math.round(rows.reduce(function(s,r){return s+r.score;},0)/rows.length);
+  var avgAcc=Math.round(rows.reduce(function(s,r){return s+r.accuracy;},0)/rows.length);
+  var finished=rows.filter(function(r){return r.finished;}).length;
+  var kpis=[
+    {v:rows.length,l:'นักศึกษาที่มีข้อมูล'},
+    {v:avgScore,l:'คะแนนเฉลี่ย'},
+    {v:avgAcc+'%',l:'ความแม่นยำเฉลี่ย'},
+    {v:finished+'/'+rows.length,l:'จบเกมแล้ว'}
+  ];
+  box.innerHTML=kpis.map(function(k){return '<div class="kpi"><b>'+k.v+'</b><span>'+k.l+'</span></div>';}).join('');
+}
+
+/* ---------------- table ---------------- */
+function renderTable(){
+  var box=document.getElementById('records');
+  var rows=filteredRows();
+  if(!rows.length){
+    box.innerHTML='<span class="empty">ไม่พบข้อมูลตามเงื่อนไขที่กรอง — ผลจะถูกบันทึกอัตโนมัติเมื่อนักศึกษาเล่นบนเครื่องนี้</span>';
+    return;
+  }
+  var h='<div class="tbl-wrap"><table class="tbl"><thead><tr>'+
+    '<th>#</th><th>รหัส</th><th>ชื่อ</th><th>ทีม</th><th>ห้อง/รอบ</th><th>คะแนน</th><th>ความแม่นยำ</th>'+
+    '<th>ครั้งแรก</th><th>คืบหน้า</th><th>เวลา</th><th>คำใบ้</th><th>สถานะ</th><th>ต้องเสริม</th>'+
+    '</tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    h+='<tr data-key="'+r.key+'" style="cursor:pointer"><td>'+(i+1)+'</td><td>'+r.student_id+'</td><td>'+
+       r.full_name+'</td><td>'+r.team_name+'</td><td>'+r.room_code+' / '+r.round_code+'</td>'+
+       '<td><b>'+r.score+'</b></td><td>'+r.accuracy+'%</td>'+
+       '<td>'+r.first_attempt_accuracy+'%</td><td>'+r.completion_percent+'%</td>'+
+       '<td>'+Math.floor(r.total_time_s/60)+':'+('0'+(r.total_time_s%60)).slice(-2)+'</td>'+
+       '<td>'+r.total_hints+'</td><td>'+(r.finished?'✅ จบเกม':'⏳ กำลังเล่น')+'</td>'+
+       '<td class="weak">'+(r.weak_topics.length?r.weak_topics.join(', '):'—')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  box.innerHTML=h;
+  box.querySelectorAll('tbody tr').forEach(function(tr){
+    tr.addEventListener('click',function(){ openDetail(tr.getAttribute('data-key')); });
+  });
+}
+
+/* ---------------- class-wide competency + confusion ---------------- */
+function renderCompetencyClass(){
+  var box=document.getElementById('competency');
+  var rows=filteredRows();
+  if(!rows.length){ box.innerHTML='<span class="empty">ยังไม่มีข้อมูล</span>'; return; }
+  var agg={};
+  Object.keys(COMPETENCY).forEach(function(k){ agg[k]={sum:0,n:0}; });
+  rows.forEach(function(r){
+    (r.competency_scores||[]).forEach(function(c){
+      if(c.pct==null||!agg[c.key])return;
+      agg[c.key].sum+=c.pct; agg[c.key].n++;
+    });
+  });
+  box.innerHTML=Object.keys(COMPETENCY).map(function(k){
+    var a=agg[k], pct=a.n?Math.round(a.sum/a.n):null;
+    var level=pct===null?'ยังไม่มีหลักฐาน':pct>=80?'จุดแข็ง':pct>=60?'ควรทบทวน':'ต้องเสริม';
+    var cls=pct===null?'n':pct>=80?'s':pct>=60?'m':'w';
+    var col=cls==='s'?'#4ADE80':cls==='m'?'#FFC53D':cls==='w'?'#F0658A':'#3D5580';
+    return '<div class="comp-row"><div class="comp-lb"><span>'+COMPETENCY[k]+'</span>'+
+      '<span class="lvl '+cls+'">'+(pct===null?level:pct+'% · '+level)+'</span></div>'+
+      '<div class="comp-bar"><span style="width:'+(pct||0)+'%;background:'+col+'"></span></div></div>';
+  }).join('');
+}
+function renderConfusionClass(){
+  var box=document.getElementById('confusion');
+  var rows=filteredRows();
+  var byTag={};
+  rows.forEach(function(r){
+    (r.attempts||[]).forEach(function(a){
+      if(a.is_correct)return;
+      var t=a.competency||'other';
+      byTag[t]=byTag[t]||{label:COMPETENCY[t]||TAG_LABEL[t]||t,wrong:0};
+      byTag[t].wrong++;
+    });
+  });
+  var list=Object.keys(byTag).map(function(k){return byTag[k];}).sort(function(a,b){return b.wrong-a.wrong;});
+  if(!list.length){ box.innerHTML='<span class="empty">ยังไม่พบจุดที่ตอบผิด</span>'; return; }
+  box.innerHTML=list.map(function(c){
+    return '<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;'+
+      'border-bottom:1px dashed #C9DCF2;font-size:12.8px"><span>'+c.label+
+      '</span><span style="color:#B3243F;font-weight:700;white-space:nowrap">ตอบผิด '+c.wrong+' ครั้ง</span></div>';
+  }).join('');
+}
+
+/* ---------------- detail drawer ---------------- */
+function openDetail(key){
+  var rows=loadRecords();
+  var r=rows.filter(function(x){return x.key===key;})[0];
+  if(!r)return;
+  var root=document.getElementById('drawerRoot');
+  var wrap=el('div','drawer');
+  var attemptsByCP={};
+  (r.attempts||[]).forEach(function(a){
+    attemptsByCP[a.checkpoint]=attemptsByCP[a.checkpoint]||{correct:0,wrong:0};
+    if(a.is_correct)attemptsByCP[a.checkpoint].correct++; else attemptsByCP[a.checkpoint].wrong++;
+  });
+  var cpRows=Object.keys(attemptsByCP).map(function(k){
+    var a=attemptsByCP[k];
+    return '<tr><td>'+k+'</td><td>'+a.correct+'</td><td>'+a.wrong+'</td></tr>';
+  }).join('');
+  var compRows=(r.competency_scores||[]).map(function(c){
+    var col=c.pct==null?'#888':c.pct>=80?'#1B7A45':c.pct>=60?'#B8730A':'#B3243F';
+    return '<tr><td>'+c.label+'</td><td style="text-align:right">'+(c.pct==null?'—':c.pct+'%')+
+      '</td><td style="color:'+col+';font-weight:700">'+c.level+'</td></tr>';
+  }).join('');
+  wrap.innerHTML='<div class="card">'+
+    '<h3>'+r.full_name+'</h3>'+
+    '<div class="meta">รหัส '+r.student_id+' · ทีม '+r.team_name+' · ห้อง '+r.room_code+' · รอบ '+r.round_code+
+    '<br>คะแนน <b>'+r.score+'</b> · ความแม่นยำ '+r.accuracy+'% · ตอบถูกครั้งแรก '+r.first_attempt_accuracy+
+    '% · คืบหน้า '+r.completion_percent+'% · คำใบ้ '+r.total_hints+' ครั้ง · คอมโบสูงสุด '+r.best_combo+
+    'x · อัปเดตล่าสุด '+new Date(r.updated_at).toLocaleString('th-TH')+'</div>'+
+    '<h2 style="font-size:13.5px;margin:10px 0 6px;color:#0E4C86">สมรรถนะ 7 ด้าน</h2>'+
+    '<table><thead><tr><th>ด้าน</th><th>คะแนน</th><th>ระดับ</th></tr></thead><tbody>'+compRows+'</tbody></table>'+
+    '<h2 style="font-size:13.5px;margin:12px 0 6px;color:#0E4C86">ผลรายด่าน</h2>'+
+    '<table><thead><tr><th>ด่าน</th><th>ตอบถูก</th><th>ตอบผิด</th></tr></thead><tbody>'+cpRows+'</tbody></table>'+
+    '<button class="closeBtn">ปิด</button></div>';
+  root.appendChild(wrap);
+  wrap.addEventListener('click',function(e){ if(e.target===wrap) root.removeChild(wrap); });
+  wrap.querySelector('.closeBtn').addEventListener('click',function(){ root.removeChild(wrap); });
+}
+
+/* ---------------- CSV / PDF / clear ---------------- */
+function downloadCSV(rows,name){
+  var csv='\ufeff'+rows.map(function(r){
+    return r.map(function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}).join(',');
+  }).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function exportAllCSV(){
+  var rows=filteredRows();
+  if(!rows.length){alert('ยังไม่มีข้อมูลให้ส่งออก');return;}
+  var comps=Object.keys(COMPETENCY);
+  var head=['student_id','full_name','team_name','room_code','round_code','score','accuracy',
+    'first_attempt_accuracy','completion_percent','total_time_s','total_hints','timeouts',
+    'best_combo','cell_health','finished']
+    .concat(comps.map(function(k){return COMPETENCY[k];}))
+    .concat(['strong_topics','weak_topics','updated_at']);
+  var out=[head];
+  rows.forEach(function(r){
+    var line=[r.student_id,r.full_name,r.team_name,r.room_code,r.round_code,r.score,r.accuracy,
+      r.first_attempt_accuracy,r.completion_percent,r.total_time_s,r.total_hints,r.timeouts,
+      r.best_combo,r.cell_health,r.finished?'จบเกม':'ยังไม่จบ'];
+    comps.forEach(function(k){
+      var c=(r.competency_scores||[]).filter(function(x){return x.key===k;})[0];
+      line.push(c&&c.pct!=null?c.pct:'');
+    });
+    line.push((r.strong_topics||[]).join(' / '),(r.weak_topics||[]).join(' / '),r.updated_at);
+    out.push(line);
+  });
+  downloadCSV(out,'cell-candy-lab-ทุกคน.csv');
+}
+function printReport(){
+  var rows=filteredRows();
+  if(!rows.length){alert('ยังไม่มีข้อมูลให้พิมพ์');return;}
+  var body=rows.map(function(r,i){
+    var cs=(r.competency_scores||[]).map(function(c){
+      var col=c.pct==null?'#888':c.pct>=80?'#1B7A45':c.pct>=60?'#B8730A':'#B3243F';
+      return '<tr><td>'+c.label+'</td><td style="text-align:right">'+
+        (c.pct==null?'—':c.pct+'%')+'</td><td style="color:'+col+';font-weight:700">'+c.level+'</td></tr>';
+    }).join('');
+    return '<section><h2>'+(i+1)+'. '+r.full_name+' <small>('+r.student_id+' · '+r.team_name+')</small></h2>'+
+      '<p class="meta">ห้อง '+r.room_code+' · รอบ '+r.round_code+' · คะแนน <b>'+r.score+'</b>'+
+      ' · ความแม่นยำ '+r.accuracy+'% · ตอบถูกครั้งแรก '+r.first_attempt_accuracy+'%'+
+      ' · ความคืบหน้า '+r.completion_percent+'% · เวลา '+Math.floor(r.total_time_s/60)+' นาที'+
+      ' · คำใบ้ '+r.total_hints+' ครั้ง · สถานะ '+(r.finished?'จบเกม':'ยังไม่จบ')+'</p>'+
+      '<table><thead><tr><th>สมรรถนะ</th><th>คะแนน</th><th>ระดับ</th></tr></thead><tbody>'+cs+'</tbody></table>'+
+      '<p class="meta"><b>จุดแข็ง:</b> '+((r.strong_topics||[]).join(', ')||'—')+
+      '<br><b>หัวข้อที่ต้องเสริม:</b> '+((r.weak_topics||[]).join(', ')||'—')+'</p></section>';
+  }).join('');
+  var win=window.open('','_blank');
+  if(!win){alert('เบราว์เซอร์บล็อกหน้าต่างใหม่ กรุณาอนุญาต pop-up');return;}
+  win.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">'+
+    '<title>รายงานผลการเรียนรู้ · Cell Candy Lab</title>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">'+
+    '<style>@page{size:A4 landscape;margin:12mm}'+
+    'body{font-family:Kanit,sans-serif;color:#111;font-size:12px;margin:0;padding:10px}'+
+    'h1{font-size:19px;margin:0 0 4px}'+
+    'section{page-break-inside:avoid;border:1px solid #ccc;border-radius:8px;padding:10px 12px;margin-bottom:10px}'+
+    'h2{font-size:14px;margin:0 0 4px}h2 small{font-weight:400;color:#555;font-size:11px}'+
+    '.meta{margin:4px 0;color:#333;line-height:1.6}'+
+    'table{border-collapse:collapse;width:60%;margin:6px 0}'+
+    'th,td{border:1px solid #ddd;padding:3px 7px;font-size:11px}'+
+    'th{background:#f2f5f9;text-align:left}</style></head><body>'+
+    '<h1>รายงานผลการเรียนรู้ · Cell Candy Lab: Glucose Journey</h1>'+
+    '<p class="meta">ออกรายงานเมื่อ '+new Date().toLocaleString('th-TH')+' · จำนวน '+rows.length+' คน</p>'+
+    body+
+    '<p style="text-align:center;color:#888;font-size:10px;margin-top:14px">'+
+    '© 2026 Chatrachatchaya Ch., Ph.D., RMUTI. All rights reserved.</p>'+
+    '</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+function clearRecords(){
+  if(!confirm('ลบข้อมูลนักศึกษาทั้งหมดในเครื่องนี้? การกระทำนี้ย้อนกลับไม่ได้'))return;
+  saveRecords([]); renderAll();
+}
+
+/* ---------------- wire up ---------------- */
+function renderAll(){ renderKPIs(); renderTable(); renderCompetencyClass(); renderConfusionClass(); }
+['filterRoom','filterRound','filterText'].forEach(function(id){
+  document.getElementById(id).addEventListener('input',renderAll);
+});
+document.getElementById('btnCsvAll').addEventListener('click',exportAllCSV);
+document.getElementById('btnPdf').addEventListener('click',printReport);
+document.getElementById('btnClear').addEventListener('click',clearRecords);
+document.getElementById('liveRoomFilter').addEventListener('input',function(){
+  if(fbDB) subscribeLiveRoom();
+});
+
+/* รีเฟรชอัตโนมัติถ้ามีการเล่นเกมแท็บอื่นพร้อมกัน (เฉพาะกรณี same-origin ผ่านเว็บจริง) */
+window.addEventListener('storage',function(e){ if(e.key===STORE_KEY) renderAll(); });
+
+})();
+</script>
+</body>
+</html>
