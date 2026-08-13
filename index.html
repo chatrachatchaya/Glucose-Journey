@@ -19,6 +19,7 @@
   --ink:#123166; --dim:#5B7BA8;
 }
 *{box-sizing:border-box}
+html,body{overflow-x:hidden;max-width:100%}
 body{
   margin:0;padding:10px;font-family:Kanit,system-ui,sans-serif;color:var(--ink);
   background:
@@ -103,7 +104,7 @@ body{
 .hint{flex:0 0 116px;padding-right:6px;border-right:1px solid #C9DCF2}
 .hint .h1{font-size:12.5px;font-weight:700;color:#0E4C86}
 .hint .h2{font-size:10.5px;color:var(--dim);line-height:1.45;margin-top:3px}
-.cards{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 6px;flex:1}
+.cards{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 6px;flex:1;min-width:0}
 .cards::-webkit-scrollbar{height:6px}
 .cards::-webkit-scrollbar-thumb{background:#9CC6EE;border-radius:3px}
 .card{flex:0 0 auto;width:76px;border-radius:14px;padding:7px 4px 6px;text-align:center;cursor:pointer;
@@ -218,17 +219,18 @@ body{
   background:linear-gradient(90deg,#4ADE80,#7DD3FC);transition:width .2s linear}
 .rxn{background:linear-gradient(180deg,#F4F9FF,#E2EEFB);border:2px solid #9CC6EE;border-radius:16px;
   padding:11px 12px;margin-bottom:12px}
-.rxn-row{display:flex;align-items:stretch;gap:9px}
+.rxn-row{display:flex;align-items:stretch;gap:9px;min-width:0}
 @media(max-width:520px){.rxn-row{flex-direction:column}}
-.rxn-box{flex:1;background:linear-gradient(180deg,#FFFFFF,#EAF3FF);border:2px solid #7FB2E8;
+.rxn-box{flex:1;min-width:0;background:linear-gradient(180deg,#FFFFFF,#EAF3FF);border:2px solid #7FB2E8;
   border-radius:12px;padding:8px 10px;font-size:12.3px;line-height:1.4;font-weight:600;
-  box-shadow:inset 0 2px 0 #FFF,0 2px 4px rgba(30,70,130,.12);text-align:center}
+  box-shadow:inset 0 2px 0 #FFF,0 2px 4px rgba(30,70,130,.12);text-align:center;
+  overflow-wrap:break-word;word-break:break-word}
 .rxn-box.sub{border-color:#7DD3FC}
 .rxn-box.prod{border-color:#4ADE80}
 .rxn-lb{display:block;font-size:9.5px;color:#5B7BA8;font-weight:700;margin-bottom:3px}
-.rxn-arrow{flex:0 0 132px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+.rxn-arrow{flex:0 0 132px;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;gap:1px}
-.rxn-arrow .enz{font-size:10.5px;font-weight:800;color:#B8730A;line-height:1.25}
+.rxn-arrow .enz{font-size:10.5px;font-weight:800;color:#B8730A;line-height:1.25;overflow-wrap:break-word}
 .rxn-arrow .arw{font-size:16px;color:#2B6FD0;letter-spacing:-1px}
 .rxn-arrow .rt{font-size:9.5px;color:#5B7BA8;line-height:1.25}
 .rxn-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;padding-top:8px;
@@ -255,7 +257,8 @@ body{
   background:linear-gradient(180deg,#FFFFFF,#EAF3FF);border:2px solid #D6E6F7}
 .lb-row.me{border-color:var(--gold);background:linear-gradient(180deg,#FFF6E2,#FDEFD0)}
 .lb-rank{flex:0 0 28px;text-align:center;font-size:16px;font-weight:800;color:#1B5E96}
-.lb-name{flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
+.lb-name{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3;
+  overflow-wrap:break-word;word-break:break-word}
 .lb-name small{display:block;font-size:10.5px;color:var(--dim);font-weight:500}
 .lb-score{font-size:15px;font-weight:800;color:#B8730A}
 /* โครงสร้างโมเลกุลในการ์ดปฏิกิริยา */
